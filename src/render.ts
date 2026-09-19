@@ -29,9 +29,7 @@ export function renderGame(state: GameState, now = Date.now()): string {
   const drillName = challenge.id.replaceAll("-", " ").toUpperCase();
   const challengeContent = [
     `  ${paint("text", challenge.title, "1")}`,
-    ...wrapText(challenge.instruction, PANEL_CONTENT_WIDTH - 4).map(
-      (line) => `  ${line}`,
-    ),
+    ...renderInstructionList(challenge.instructions),
     "",
     paint("info", "SHORTCUT", "2"),
     `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
@@ -193,6 +191,14 @@ function progressBar(completed: number, total: number, width: number): { filled:
 function alignColumns(left: string, right: string): string {
   const spaces = Math.max(1, PANEL_WIDTH - visibleLength(left) - visibleLength(right));
   return `${left}${" ".repeat(spaces)}${right}`;
+}
+
+function renderInstructionList(instructions: string[]): string[] {
+  return instructions.flatMap((instruction) =>
+    wrapText(instruction, PANEL_CONTENT_WIDTH - 4).map((line, index) =>
+      `${index === 0 ? `  ${paint("accent", "•", "1")} ` : "    "}${line}`,
+    ),
+  );
 }
 
 function wrapText(value: string, width: number): string[] {
