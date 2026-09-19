@@ -47,7 +47,7 @@ export function renderGame(state: GameState): string {
     challengeHeading,
     "",
     paint("info", "GOAL", "2"),
-    `${paint("dim", "$", "2")} ${paint("text", formatTarget(challenge.target), "2")}`,
+    `${paint("dim", "$", "2")} ${paint("text", challenge.target, "2")}`,
     `${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
     ...renderEditorBlock(state.editor),
@@ -130,13 +130,7 @@ function renderProgressLabel(state: GameState): string {
 }
 
 function renderStatsStrip(state: GameState): string {
-  const content = [
-    renderKeyStat(state),
-    `MISSES ${state.mistakes}`,
-    `TOTAL ${state.totalKeys}`,
-  ].join(" · ");
-
-  return backgroundLine(content);
+  return backgroundLine(renderKeyStat(state));
 }
 
 function renderKeyStat(state: GameState): string {
@@ -201,10 +195,6 @@ function formatDrillName(id: string): string {
   const first = words[0] ?? "";
   words[0] = first.length > 0 ? `${first[0]?.toUpperCase() ?? ""}${first.slice(1)}` : first;
   return words.join(" ");
-}
-
-function formatTarget(target: string): string {
-  return target.length === 0 ? "· empty line" : target;
 }
 
 function renderEditorBlock(editor: EditorState): string[] {

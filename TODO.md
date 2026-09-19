@@ -5,10 +5,6 @@
 
 ## Next
 
-- [ ] **remove · MISSES 0 · TOTAL 27** — dont think we need that concept. we mainyl care about completing currnet lesson effectively no matter how many retrries. and total progress of all lessons.
-- [ ] **bug: lesson 8**
-  - · empty line
-  - is cnfusing i think it should just literaly show an empty line (we still have the $ prefix) and then the cursor position below
 - [ ] **challenge 14 is exactly like challenge 1** — we should not have so similar challenges. and if we have similar challenges for a good reason, and thechallenges are on the same tier for the same key, then tey should be co-located
 
 ## Later
@@ -16,8 +12,11 @@
 
 ## Archive
 
+- [x] **remove · MISSES 0 · TOTAL 27** — keep the current lesson key budget and all-lessons progress, without retry or cumulative key counters in the stats strip.
+- [x] **bug: lesson 8**
+  - · empty line
+  - is cnfusing i think it should just literaly show an empty line (we still have the $ prefix) and then the cursor position below
 - [x] **reverse keys count display** — Count down from each lesson's optimal key budget, keeping the sign column stable and allowing negative values.
-
 - [x] **notification area**
   - below the area that says   ENTER submit   ESC reset   CTRL+C quit we want a new notification line.
   - it is mainly relevant when completing a lesson. it should show for 3s. it has 3 sections:

@@ -102,6 +102,25 @@ test("aligns every goal cursor with its target insertion point", () => {
   }
 });
 
+test("renders an empty target as a blank command line", () => {
+  const challengeIndex = challenges.findIndex((challenge) => challenge.id === "kill-to-start");
+  const challenge = challenges[challengeIndex];
+  assert.ok(challenge);
+  assert.equal(challenge.target, "");
+
+  const state = {
+    ...startGame(),
+    challengeIndex,
+    editor: createEditor(challenge.start, challenge.startCursor),
+  };
+  const lines = plainRender(state).split("\n");
+  const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
+
+  assert.equal(lines[goalIndex + 1], "  $ ");
+  assert.match(lines[goalIndex + 2] ?? "", /cursor/);
+  assert.doesNotMatch(lines[goalIndex + 1] ?? "", /empty line/);
+});
+
 test("shows a completion notification below the controls", () => {
   let state = startGame();
   state = press(state, control("a"));
@@ -141,7 +160,8 @@ test("shows keyboard presses instead of an abstract score", () => {
 
   const output = plainRender(state);
 
-  assert.match(output, /KEYS  9 · MISSES 0 · TOTAL 6/);
+  assert.match(output, /KEYS  9/);
+  assert.doesNotMatch(output, /MISSES|TOTAL/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });
 
@@ -150,23 +170,26 @@ test("counts the remaining optimal keys down through zero", () => {
   assert.ok(challenge);
 
   const initial = plainRender(startGame());
-  assert.match(initial, /KEYS  6 · MISSES 0 · TOTAL 0/);
+  assert.match(initial, /KEYS  6/);
+  assert.doesNotMatch(initial, /MISSES|TOTAL/);
 
   const atGoal = plainRender({
     ...startGame(),
     keyCount: challenge.idealKeys,
   });
-  assert.match(atGoal, /KEYS  0 · MISSES 0 · TOTAL 0/);
+  assert.match(atGoal, /KEYS  0/);
+  assert.doesNotMatch(atGoal, /MISSES|TOTAL/);
 
   const overBudget = plainRender({
     ...startGame(),
     keyCount: challenge.idealKeys + 1,
   });
-  assert.match(overBudget, /KEYS -1 · MISSES 0 · TOTAL 0/);
+  assert.match(overBudget, /KEYS -1/);
+  assert.doesNotMatch(overBudget, /MISSES|TOTAL/);
 
   const atGoalLine = atGoal.split("\n").find((line) => line.includes("KEYS  0"));
   const overBudgetLine = overBudget.split("\n").find((line) => line.includes("KEYS -1"));
-  assert.equal(atGoalLine?.indexOf("MISSES"), overBudgetLine?.indexOf("MISSES"));
+  assert.equal(atGoalLine?.indexOf("KEYS"), overBudgetLine?.indexOf("KEYS"));
 });
 
 test("keeps the stats highlight at the common left padding", () => {
