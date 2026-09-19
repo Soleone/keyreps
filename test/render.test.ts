@@ -102,11 +102,27 @@ test("aligns every goal cursor with its target insertion point", () => {
   }
 });
 
-test("omits transient status messages", () => {
-  const state = press(startGame(), control("a"));
-  const output = plainRender(state);
+test("shows a completion notification below the controls", () => {
+  let state = startGame();
+  state = press(state, control("a"));
+  state = press(state, text("sudo "));
+  state = press(state, enter);
 
-  assert.doesNotMatch(output, /STATUS|Shortcut registered/);
+  const output = plainRender(state);
+  const lines = output.split("\n");
+  const controlsIndex = lines.findIndex((line) => line.includes("ENTER submit"));
+  const notificationIndex = lines.findIndex((line) => line.includes("Lesson complete"));
+
+  assert.match(output, /✓ Perfect · Lesson complete/);
+  assert.ok(controlsIndex >= 0);
+  assert.ok(notificationIndex > controlsIndex);
+  assert.equal(lines[notificationIndex - 1]?.trim(), "");
+});
+
+test("does not show a completion notification before a lesson is solved", () => {
+  const output = plainRender(press(startGame(), control("a")));
+
+  assert.doesNotMatch(output, /Lesson complete/);
 });
 
 test("keeps the controls text-only", () => {

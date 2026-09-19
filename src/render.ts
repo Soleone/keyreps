@@ -5,6 +5,7 @@ import {
   shouldShowInstructions,
   type GameState,
   type KeyPerformance,
+  type LessonNotification,
 } from "./game.js";
 import type { EditorState } from "./editor.js";
 import { createThemeManager, type ThemeColor } from "./theme.js";
@@ -62,6 +63,7 @@ export function renderGame(state: GameState): string {
     renderStatsStrip(state),
     "",
     renderControls(),
+    ...(state.notification === null ? [] : ["", renderNotification(state.notification)]),
   ];
 
   return renderScreen(lines);
@@ -88,6 +90,7 @@ function renderFinished(state: GameState): string {
     renderStatsStrip(state),
     "",
     `${paint("accent", "R", "1")} play again   ${paint("text", "CTRL+C", "2")} quit`,
+    ...(state.notification === null ? [] : ["", renderNotification(state.notification)]),
   ];
 
   return renderScreen(lines);
@@ -147,6 +150,12 @@ function renderKeyStat(state: GameState): string {
 
 function renderControls(): string {
   return `${paint("success", "ENTER", "1")} ${paint("text", "submit", "2")}   ${paint("warning", "ESC", "1")} ${paint("text", "reset", "2")}   ${paint("error", "CTRL+C", "1")} ${paint("text", "quit", "2")}`;
+}
+
+function renderNotification(notification: LessonNotification): string {
+  const color = performanceColor(notification.performance);
+  const icon = icons.submit.length > 0 ? icons.submit : "✓";
+  return `${paint(color, icon, "1")} ${paint(color, performanceLabel(notification.performance), "1")} ${paint("dim", "·", "2")} ${paint("text", notification.text, "2")}`;
 }
 
 function panel(title: string, contents: string[]): string[] {

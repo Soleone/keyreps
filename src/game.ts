@@ -11,6 +11,11 @@ export type KeyPerformance = "perfect" | "close" | "poor";
 
 const CLOSE_KEY_TOLERANCE = 2;
 
+export interface LessonNotification {
+  performance: KeyPerformance;
+  text: string;
+}
+
 export interface GameState {
   challengeIndex: number;
   editor: EditorState;
@@ -21,6 +26,7 @@ export interface GameState {
   completed: number;
   lastKeyCount: number | null;
   lastPerformance: KeyPerformance | null;
+  notification: LessonNotification | null;
   finished: boolean;
 }
 
@@ -140,6 +146,7 @@ function submit(state: GameState, challenge: Challenge): KeyResult {
         completed,
         lastKeyCount: state.keyCount,
         lastPerformance: performance,
+        notification: lessonCompleteNotification(performance),
         finished: true,
       },
       quit: false,
@@ -153,6 +160,7 @@ function submit(state: GameState, challenge: Challenge): KeyResult {
       completed,
       state.keyCount,
       performance,
+      lessonCompleteNotification(performance),
     ),
     quit: false,
   };
@@ -162,12 +170,20 @@ function solved(editor: EditorState, challenge: Challenge): boolean {
   return editor.text === challenge.target && editor.cursor === challenge.targetCursor;
 }
 
+function lessonCompleteNotification(performance: KeyPerformance): LessonNotification {
+  return {
+    performance,
+    text: "Lesson complete",
+  };
+}
+
 function makeChallengeState(
   challengeIndex: number,
   totalKeys: number,
   completed = 0,
   lastKeyCount: number | null = null,
   lastPerformance: KeyPerformance | null = null,
+  notification: LessonNotification | null = null,
 ): GameState {
   const challenge = challenges[challengeIndex];
   if (challenge === undefined) {
@@ -181,6 +197,7 @@ function makeChallengeState(
       completed,
       lastKeyCount,
       lastPerformance,
+      notification,
       finished: true,
     };
   }
@@ -195,6 +212,7 @@ function makeChallengeState(
     completed,
     lastKeyCount,
     lastPerformance,
+    notification,
     finished: false,
   };
 }

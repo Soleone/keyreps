@@ -5,19 +5,27 @@
 
 ## Next
 
-- [ ] **notification area**
-  - below the area that says   ENTER submit   ESC reset   CTRL+C quit we want a new notification line.
-  - it is mainly relevant when completing a lesson. it should show for 3s. it has 3 sections:
-  - icon
-  - status (colored)
-  - text
-  - e.g. check mark icon Perfect separator Lesson completer
+- [ ] **remove · MISSES 0 · TOTAL 27** — dont think we need that concept. we mainyl care about completing currnet lesson effectively no matter how many retrries. and total progress of all lessons.
+- [ ] **reverse keys count display**
+  - instead of counting up we should count down, potentially into negative (keep one leading space that can be replaced with - to avoid shifting the content.
+  - so for each lesson it starts by showing the amount of keys optimally needed, the goal is to land at 0
+- [ ] **bug: lesson 8**
+  - · empty line
+  - is cnfusing i think it should just literaly show an empty line (we still have the $ prefix) and then the cursor position below
+- [ ] **challenge 14 is exactly like challenge 1** — we should not have so similar challenges. and if we have similar challenges for a good reason, and thechallenges are on the same tier for the same key, then tey should be co-located
 
 ## Later
 
 
 ## Archive
 
+- [x] **notification area**
+  - below the area that says   ENTER submit   ESC reset   CTRL+C quit we want a new notification line.
+  - it is mainly relevant when completing a lesson. it should show for 3s. it has 3 sections:
+  - icon
+  - status (colored)
+  - text
+  - e.g. check mark icon Perfect separator Lesson completer
 - [x] **reorganize screen sections** — Lead with the lesson title, then the goal, current input and status, details and tips, and keyboard-press stats.
 - [x] **build more combination stages at the end**
   - intermediate stages combine multiple commands

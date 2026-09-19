@@ -2,11 +2,17 @@
 
 import process from "node:process";
 import { InputDecoder } from "./input.js";
-import { handleKey, startGame, type GameState } from "./game.js";
+import {
+  handleKey,
+  startGame,
+  type GameState,
+  type LessonNotification,
+} from "./game.js";
 import { refreshTheme, renderGame } from "./render.js";
 import type { Key } from "./types.js";
 
 const THEME_POLL_INTERVAL_MS = 750;
+const NOTIFICATION_DURATION_MS = 3000;
 
 function main(): void {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
@@ -19,6 +25,7 @@ function main(): void {
   let game: GameState = startGame();
   let cleanedUp = false;
   let pendingTimer: NodeJS.Timeout | undefined;
+  let notificationTimer: NodeJS.Timeout | undefined;
   let themeTimer: NodeJS.Timeout | undefined;
 
   const cleanup = (): void => {
@@ -29,6 +36,10 @@ function main(): void {
     if (pendingTimer !== undefined) {
       clearTimeout(pendingTimer);
       pendingTimer = undefined;
+    }
+    if (notificationTimer !== undefined) {
+      clearTimeout(notificationTimer);
+      notificationTimer = undefined;
     }
     if (themeTimer !== undefined) {
       clearInterval(themeTimer);
@@ -48,10 +59,33 @@ function main(): void {
     process.stdout.write(renderGame(game));
   };
 
+  const scheduleNotificationExpiry = (notification: LessonNotification | null): void => {
+    if (notificationTimer !== undefined) {
+      clearTimeout(notificationTimer);
+      notificationTimer = undefined;
+    }
+    if (notification === null) {
+      return;
+    }
+
+    notificationTimer = setTimeout(() => {
+      notificationTimer = undefined;
+      if (game.notification !== notification) {
+        return;
+      }
+      game = { ...game, notification: null };
+      draw();
+    }, NOTIFICATION_DURATION_MS);
+  };
+
   const consume = (keys: Key[]): boolean => {
     for (const key of keys) {
+      const previousNotification = game.notification;
       const result = handleKey(game, key);
       game = result.state;
+      if (game.notification !== previousNotification) {
+        scheduleNotificationExpiry(game.notification);
+      }
       if (result.quit) {
         quit();
         return false;

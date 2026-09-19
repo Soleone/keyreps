@@ -24,6 +24,10 @@ test("a solved challenge reports the exact keyboard press result", () => {
   assert.equal(state.totalKeys, 6);
   assert.equal(state.lastKeyCount, 6);
   assert.equal(state.lastPerformance, "perfect");
+  assert.deepEqual(state.notification, {
+    performance: "perfect",
+    text: "Lesson complete",
+  });
 });
 
 test("key performance uses keyboard presses only", () => {
@@ -134,4 +138,5 @@ test("escape resets a challenge without losing completed key presses", () => {
   assert.equal(state.keyCount, 0);
   assert.equal(state.totalKeys, 0);
   assert.equal(state.completed, 0);
+  assert.equal(state.notification, null);
 });
