@@ -10,15 +10,15 @@ const enter: Key = { type: "enter" };
 const ANSI_SEQUENCE = /\u001b\[[0-9;?]*[ -/]*[@-~]/g;
 
 function plainRender(state: ReturnType<typeof startGame>): string {
-  return renderGame(state, 0).replace(ANSI_SEQUENCE, "");
+  return renderGame(state).replace(ANSI_SEQUENCE, "");
 }
 
 function press(state: ReturnType<typeof startGame>, key: Key) {
-  return handleKey(state, key, 0).state;
+  return handleKey(state, key).state;
 }
 
 test("renders each current stage instruction as a bullet", () => {
-  let state = startGame(0);
+  let state = startGame();
   state = press(state, control("a"));
   state = press(state, text("sudo "));
   state = press(state, enter);
@@ -33,7 +33,7 @@ test("renders each current stage instruction as a bullet", () => {
 });
 
 test("makes the editor a focused input before the goal", () => {
-  const output = plainRender(startGame(0));
+  const output = plainRender(startGame());
 
   assert.match(output, /Typegod · UNIX KEYBOARD KATAS/);
   assert.match(output, /01 · Line start/);
@@ -44,7 +44,7 @@ test("makes the editor a focused input before the goal", () => {
 });
 
 test("aligns the input and goal command", () => {
-  let state = startGame(0);
+  let state = startGame();
   state = press(state, control("a"));
   state = press(state, text("sudo "));
   const lines = plainRender(state).split("\n");
@@ -65,7 +65,7 @@ test("aligns the input and goal command", () => {
 });
 
 test("puts status below the goal as one line", () => {
-  const state = press(startGame(0), control("a"));
+  const state = press(startGame(), control("a"));
   const lines = plainRender(state).split("\n");
   const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
   const statusIndex = lines.findIndex((line) => line.includes("STATUS"));
@@ -76,7 +76,7 @@ test("puts status below the goal as one line", () => {
 });
 
 test("shows keyboard presses instead of an abstract score", () => {
-  let state = startGame(0);
+  let state = startGame();
   state = press(state, control("a"));
   state = press(state, text("sudo "));
   state = press(state, enter);
@@ -90,7 +90,7 @@ test("shows keyboard presses instead of an abstract score", () => {
 
 test("shows the final keyboard press total", () => {
   const state = {
-    ...startGame(0),
+    ...startGame(),
     finished: true,
     completed: 13,
     totalKeys: 20,

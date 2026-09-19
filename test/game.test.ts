@@ -7,15 +7,15 @@ const control = (key: string): Key => ({ type: "control", key });
 const text = (value: string): Key => ({ type: "text", value });
 const enter: Key = { type: "enter" };
 
-function press(state: ReturnType<typeof startGame>, key: Key, now = 0) {
-  return handleKey(state, key, now).state;
+function press(state: ReturnType<typeof startGame>, key: Key) {
+  return handleKey(state, key).state;
 }
 
 test("a solved challenge reports the exact keyboard press result", () => {
-  let state = startGame(0);
+  let state = startGame();
   state = press(state, control("a"));
   state = press(state, text("sudo "));
-  state = press(state, enter, 1000);
+  state = press(state, enter);
 
   assert.equal(state.challengeIndex, 1);
   assert.equal(state.completed, 1);
@@ -26,7 +26,7 @@ test("a solved challenge reports the exact keyboard press result", () => {
   assert.match(state.message, /Perfect/);
 });
 
-test("key performance does not depend on elapsed time", () => {
+test("key performance uses keyboard presses only", () => {
   assert.equal(keyPerformance(2, 2), "perfect");
   assert.equal(keyPerformance(4, 2), "close");
   assert.equal(keyPerformance(5, 2), "poor");
@@ -41,7 +41,7 @@ test("Ctrl+C requests a clean quit", () => {
 });
 
 test("escape resets a challenge without losing completed key presses", () => {
-  let state = startGame(0);
+  let state = startGame();
   state = press(state, control("a"));
   state = press(state, { type: "escape" });
 

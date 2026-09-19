@@ -19,9 +19,9 @@ export function refreshTheme(): boolean {
   return themeManager.refresh();
 }
 
-export function renderGame(state: GameState, now = Date.now()): string {
+export function renderGame(state: GameState): string {
   if (state.finished) {
-    return renderFinished(state, now);
+    return renderFinished(state);
   }
 
   const challenge = currentChallenge(state);
@@ -29,7 +29,6 @@ export function renderGame(state: GameState, now = Date.now()): string {
     return `${CLEAR_SCREEN}${paint("error", "No challenge loaded.", "1")}\n`;
   }
 
-  const elapsed = formatSeconds(Math.max(0, (now - state.startedAt) / 1000));
   const drillName = formatDrillName(challenge.id);
   const drillLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${drillName}`;
   const challengeHeading = alignColumns(
@@ -57,7 +56,7 @@ export function renderGame(state: GameState, now = Date.now()): string {
     "",
     ...challengeContent,
     "",
-    renderStatsStrip(state, elapsed),
+    renderStatsStrip(state),
     "",
     renderControls(),
   ];
@@ -65,8 +64,7 @@ export function renderGame(state: GameState, now = Date.now()): string {
   return `${CLEAR_SCREEN}${lines.join("\n")}\n`;
 }
 
-function renderFinished(state: GameState, now: number): string {
-  const elapsed = formatSeconds(Math.max(0, (now - state.startedAt) / 1000));
+function renderFinished(state: GameState): string {
   const idealTotal = challenges.reduce((total, challenge) => total + challenge.idealKeys, 0);
   const totalPerformance = keyPerformance(state.totalKeys, idealTotal);
   const result = [
@@ -84,7 +82,7 @@ function renderFinished(state: GameState, now: number): string {
     "",
     ...panel(iconLabel(icons.complete, "RUN COMPLETE"), result),
     "",
-    renderStatsStrip(state, elapsed),
+    renderStatsStrip(state),
     "",
     `${paint("accent", "R", "1")} play again   ${paint("muted", "CTRL+C", "2")} quit`,
   ];
@@ -121,9 +119,8 @@ function renderProgressLabel(state: GameState): string {
   return `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("muted", `${percent}%`, "2")}`;
 }
 
-function renderStatsStrip(state: GameState, elapsed: string): string {
+function renderStatsStrip(state: GameState): string {
   const content = [
-    `TIME ${elapsed}`,
     `KEYS ${state.keyCount}`,
     `MISSES ${state.mistakes}`,
     `TOTAL ${state.totalKeys}`,
@@ -316,8 +313,4 @@ function performanceLabel(performance: KeyPerformance | null): string {
 
 function keyPressLabel(count: number): string {
   return count === 1 ? "key press" : "key presses";
-}
-
-function formatSeconds(seconds: number): string {
-  return `${seconds.toFixed(1)}s`;
 }

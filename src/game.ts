@@ -14,7 +14,6 @@ const CLOSE_KEY_TOLERANCE = 2;
 export interface GameState {
   challengeIndex: number;
   editor: EditorState;
-  startedAt: number;
   keyCount: number;
   mistakes: number;
   focusUsed: boolean;
@@ -31,8 +30,8 @@ export interface KeyResult {
   quit: boolean;
 }
 
-export function startGame(now = Date.now()): GameState {
-  return makeChallengeState(0, 0, now, "");
+export function startGame(): GameState {
+  return makeChallengeState(0, 0, "");
 }
 
 export function currentChallenge(state: GameState): Challenge | undefined {
@@ -47,14 +46,14 @@ export function keyPerformance(keyCount: number, idealKeys: number): KeyPerforma
   return keyCount <= idealKeys + CLOSE_KEY_TOLERANCE ? "close" : "poor";
 }
 
-export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResult {
+export function handleKey(state: GameState, key: Key): KeyResult {
   if (key.type === "control" && key.key === "c") {
     return { state, quit: true };
   }
 
   if (state.finished) {
     if (key.type === "text" && key.value.toLowerCase() === "r") {
-      return { state: startGame(now), quit: false };
+      return { state: startGame(), quit: false };
     }
     return { state, quit: false };
   }
@@ -69,7 +68,6 @@ export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResu
       state: makeChallengeState(
         state.challengeIndex,
         state.totalKeys,
-        now,
         "Challenge reset.",
         state.completed,
       ),
@@ -78,7 +76,7 @@ export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResu
   }
 
   if (key.type === "enter") {
-    return submit(state, challenge, now);
+    return submit(state, challenge);
   }
 
   const applied = applyKey(state.editor, key);
@@ -112,7 +110,7 @@ export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResu
   };
 }
 
-function submit(state: GameState, challenge: Challenge, now: number): KeyResult {
+function submit(state: GameState, challenge: Challenge): KeyResult {
   if (!solved(state.editor, challenge)) {
     return {
       state: {
@@ -149,7 +147,6 @@ function submit(state: GameState, challenge: Challenge, now: number): KeyResult 
     state: makeChallengeState(
       state.challengeIndex + 1,
       totalKeys,
-      now,
       message,
       completed,
       state.keyCount,
@@ -183,7 +180,6 @@ function resultMessage(
 function makeChallengeState(
   challengeIndex: number,
   totalKeys: number,
-  now: number,
   message: string,
   completed = 0,
   lastKeyCount: number | null = null,
@@ -194,7 +190,6 @@ function makeChallengeState(
     return {
       challengeIndex,
       editor: createEditor(),
-      startedAt: now,
       keyCount: 0,
       mistakes: 0,
       focusUsed: false,
@@ -210,7 +205,6 @@ function makeChallengeState(
   return {
     challengeIndex,
     editor: createEditor(challenge.start, challenge.startCursor),
-    startedAt: now,
     keyCount: 0,
     mistakes: 0,
     focusUsed: false,
