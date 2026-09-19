@@ -116,7 +116,7 @@ test("renders an empty target as a blank command line", () => {
   const lines = plainRender(state).split("\n");
   const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
 
-  assert.equal(lines[goalIndex + 1], "  $ ");
+  assert.equal(lines[goalIndex + 1], "    $ ");
   assert.match(lines[goalIndex + 2] ?? "", /cursor/);
   assert.doesNotMatch(lines[goalIndex + 1] ?? "", /empty line/);
 });

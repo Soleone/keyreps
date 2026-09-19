@@ -20,6 +20,7 @@ const INPUT_WIDTH = PANEL_CONTENT_WIDTH - 2;
 const INPUT_CONTENT_WIDTH = INPUT_WIDTH - 4;
 const ANSI_SEQUENCE = /\u001b\[[0-9;?]*[ -/]*[@-~]/g;
 const LEFT_PADDING = "  ";
+const GOAL_INDENT = "  ";
 const themeManager = createThemeManager();
 const icons = createTerminalIcons();
 
@@ -47,7 +48,7 @@ export function renderGame(state: GameState): string {
     challengeHeading,
     "",
     paint("info", "GOAL", "2"),
-    `${paint("dim", "$", "2")} ${paint("text", challenge.target, "2")}`,
+    `${GOAL_INDENT}${paint("dim", "$", "2")} ${paint("text", challenge.target, "2")}`,
     `${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
     ...renderEditorBlock(state.editor),
@@ -217,7 +218,7 @@ function targetMarker(target: string, cursor: number): string {
   const marker = icons.goal.length > 0
     ? iconLabel(icons.goal, "cursor")
     : "^ cursor";
-  return `  ${" ".repeat(offset)}${paint("dim", marker, "2")}`;
+  return `${GOAL_INDENT}  ${" ".repeat(offset)}${paint("dim", marker, "2")}`;
 }
 
 function progressBar(completed: number, total: number, width: number): { filled: string; empty: string } {
