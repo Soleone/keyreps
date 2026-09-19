@@ -21,7 +21,6 @@ export interface GameState {
   completed: number;
   lastKeyCount: number | null;
   lastPerformance: KeyPerformance | null;
-  message: string;
   finished: boolean;
 }
 
@@ -31,7 +30,7 @@ export interface KeyResult {
 }
 
 export function startGame(): GameState {
-  return makeChallengeState(0, 0, "");
+  return makeChallengeState(0, 0);
 }
 
 export function currentChallenge(state: GameState): Challenge | undefined {
@@ -81,7 +80,6 @@ export function handleKey(state: GameState, key: Key): KeyResult {
       state: makeChallengeState(
         state.challengeIndex,
         state.totalKeys,
-        "Challenge reset.",
         state.completed,
       ),
       quit: false,
@@ -99,7 +97,6 @@ export function handleKey(state: GameState, key: Key): KeyResult {
         ...state,
         mistakes: state.mistakes + 1,
         lastPerformance: null,
-        message: "That key is not part of this drill.",
       },
       quit: false,
     };
@@ -107,10 +104,6 @@ export function handleKey(state: GameState, key: Key): KeyResult {
 
   const focusUsed = state.focusUsed || applied.action === challenge.focus;
   const keyPresses = key.type === "text" ? Array.from(key.value).length : 1;
-  const message =
-    !state.focusUsed && applied.action === challenge.focus
-      ? `Shortcut registered: ${challenge.focusLabel}.`
-      : state.message;
 
   return {
     state: {
@@ -118,7 +111,6 @@ export function handleKey(state: GameState, key: Key): KeyResult {
       editor: applied.state,
       keyCount: state.keyCount + keyPresses,
       focusUsed,
-      message,
     },
     quit: false,
   };
@@ -131,7 +123,6 @@ function submit(state: GameState, challenge: Challenge): KeyResult {
         ...state,
         mistakes: state.mistakes + 1,
         lastPerformance: null,
-        message: "Not quite. Match the target and leave the cursor at the goal marker.",
       },
       quit: false,
     };
@@ -140,7 +131,6 @@ function submit(state: GameState, challenge: Challenge): KeyResult {
   const performance = keyPerformance(state.keyCount, challenge.idealKeys);
   const totalKeys = state.totalKeys + state.keyCount;
   const completed = state.completed + 1;
-  const message = resultMessage(state, challenge, performance);
 
   if (state.challengeIndex === challenges.length - 1) {
     return {
@@ -150,7 +140,6 @@ function submit(state: GameState, challenge: Challenge): KeyResult {
         completed,
         lastKeyCount: state.keyCount,
         lastPerformance: performance,
-        message: `All drills complete. Used ${totalKeys} keyboard presses.`,
         finished: true,
       },
       quit: false,
@@ -161,7 +150,6 @@ function submit(state: GameState, challenge: Challenge): KeyResult {
     state: makeChallengeState(
       state.challengeIndex + 1,
       totalKeys,
-      message,
       completed,
       state.keyCount,
       performance,
@@ -174,28 +162,9 @@ function solved(editor: EditorState, challenge: Challenge): boolean {
   return editor.text === challenge.target && editor.cursor === challenge.targetCursor;
 }
 
-function resultMessage(
-  state: GameState,
-  challenge: Challenge,
-  performance: KeyPerformance,
-): string {
-  const keyLabel = state.keyCount === 1 ? "key press" : "key presses";
-  const rating = performance === "perfect"
-    ? "Perfect."
-    : performance === "close"
-      ? "Close to the expected amount."
-      : "More than expected.";
-  const outcome = performance === "poor" ? "Solved, but" : "Solved.";
-  const shortcutReminder = state.focusUsed
-    ? ""
-    : ` Use ${challenge.focusLabel} next time for the shortcut.`;
-  return `${outcome} ${state.keyCount} ${keyLabel}. ${rating}${shortcutReminder}`;
-}
-
 function makeChallengeState(
   challengeIndex: number,
   totalKeys: number,
-  message: string,
   completed = 0,
   lastKeyCount: number | null = null,
   lastPerformance: KeyPerformance | null = null,
@@ -212,7 +181,6 @@ function makeChallengeState(
       completed,
       lastKeyCount,
       lastPerformance,
-      message,
       finished: true,
     };
   }
@@ -227,7 +195,6 @@ function makeChallengeState(
     completed,
     lastKeyCount,
     lastPerformance,
-    message,
     finished: false,
   };
 }

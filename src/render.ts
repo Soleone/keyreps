@@ -50,7 +50,6 @@ export function renderGame(state: GameState): string {
     `${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
     ...renderEditorBlock(state.editor),
-    ...(state.message.length > 0 ? ["", renderStatus(state.message, state.lastPerformance)] : []),
     "",
     ...renderChallengeGuidance(state, challenge),
   ];
@@ -206,21 +205,6 @@ function renderEditorBlock(editor: EditorState): string[] {
 
 function inputBorder(value: string, attributes = "2"): string {
   return paint("accent", value, attributes);
-}
-
-function renderStatus(message: string, performance: KeyPerformance | null): string {
-  const prefix = "STATUS · ";
-  const available = PANEL_CONTENT_WIDTH - 2 - prefix.length;
-  return `${paint("warning", "STATUS", "1")} ${paint("dim", "·", "2")} ${paint(performanceColor(performance), truncateSingleLine(message, available), "1")}`;
-}
-
-function truncateSingleLine(value: string, width: number): string {
-  const characters = Array.from(value);
-  if (characters.length <= width) {
-    return value;
-  }
-
-  return `${characters.slice(0, Math.max(0, width - 1)).join("")}…`;
 }
 
 function targetMarker(target: string, cursor: number): string {

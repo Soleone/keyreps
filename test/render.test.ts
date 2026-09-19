@@ -102,20 +102,11 @@ test("aligns every goal cursor with its target insertion point", () => {
   }
 });
 
-test("puts status below the current input as one line", () => {
+test("omits transient status messages", () => {
   const state = press(startGame(), control("a"));
-  const lines = plainRender(state).split("\n");
-  const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
-  const editorIndex = lines.findIndex((line) => line.includes("╭─"));
-  const statusIndex = lines.findIndex((line) => line.includes("STATUS"));
-  const guidanceIndex = lines.findIndex((line) => line.includes("• Prefix"));
+  const output = plainRender(state);
 
-  assert.ok(goalIndex < editorIndex);
-  assert.ok(editorIndex < statusIndex);
-  assert.ok(statusIndex < guidanceIndex);
-  assert.equal(lines[statusIndex - 1]?.trim(), "");
-  assert.equal(lines[statusIndex + 1]?.trim(), "");
-  assert.doesNotMatch(lines[statusIndex] ?? "", /\n/);
+  assert.doesNotMatch(output, /STATUS|Shortcut registered/);
 });
 
 test("keeps the controls text-only", () => {
@@ -133,7 +124,6 @@ test("shows keyboard presses instead of an abstract score", () => {
 
   const output = plainRender(state);
 
-  assert.match(output, /Solved\. 6 key presses\. Perfect\./);
   assert.match(output, /KEYS 0 · MISSES 0 · TOTAL 6/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });

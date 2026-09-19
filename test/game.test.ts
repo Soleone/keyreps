@@ -24,8 +24,6 @@ test("a solved challenge reports the exact keyboard press result", () => {
   assert.equal(state.totalKeys, 6);
   assert.equal(state.lastKeyCount, 6);
   assert.equal(state.lastPerformance, "perfect");
-  assert.match(state.message, /6 key presses/);
-  assert.match(state.message, /Perfect/);
 });
 
 test("key performance uses keyboard presses only", () => {
