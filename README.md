@@ -3,8 +3,9 @@
 A tiny terminal game for learning Unix and Readline keyboard shortcuts.
 
 It runs a simulated command line, so practice never executes a real shell command.
-Each drill gives you a target line and scores correctness, speed, efficiency, and
-whether you used the shortcut being taught.
+Each drill gives you a target line and tracks the keyboard presses needed to solve
+it. The expected number is perfect in green, up to two extra presses are close in
+yellow, and larger detours are red. The timer is informational only.
 
 ## Run
 

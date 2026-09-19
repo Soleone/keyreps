@@ -7,6 +7,10 @@ import {
 } from "./editor.js";
 import type { Key } from "./types.js";
 
+export type KeyPerformance = "perfect" | "close" | "poor";
+
+const CLOSE_KEY_TOLERANCE = 2;
+
 export interface GameState {
   challengeIndex: number;
   editor: EditorState;
@@ -14,9 +18,10 @@ export interface GameState {
   keyCount: number;
   mistakes: number;
   focusUsed: boolean;
-  totalScore: number;
+  totalKeys: number;
   completed: number;
-  lastScore: number | null;
+  lastKeyCount: number | null;
+  lastPerformance: KeyPerformance | null;
   message: string;
   finished: boolean;
 }
@@ -32,6 +37,14 @@ export function startGame(now = Date.now()): GameState {
 
 export function currentChallenge(state: GameState): Challenge | undefined {
   return challenges[state.challengeIndex];
+}
+
+export function keyPerformance(keyCount: number, idealKeys: number): KeyPerformance {
+  if (keyCount <= idealKeys) {
+    return "perfect";
+  }
+
+  return keyCount <= idealKeys + CLOSE_KEY_TOLERANCE ? "close" : "poor";
 }
 
 export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResult {
@@ -55,9 +68,10 @@ export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResu
     return {
       state: makeChallengeState(
         state.challengeIndex,
-        state.totalScore,
+        state.totalKeys,
         now,
         "Challenge reset.",
+        state.completed,
       ),
       quit: false,
     };
@@ -73,6 +87,7 @@ export function handleKey(state: GameState, key: Key, now = Date.now()): KeyResu
       state: {
         ...state,
         mistakes: state.mistakes + 1,
+        lastPerformance: null,
         message: "That key is not part of this drill.",
       },
       quit: false,
@@ -103,24 +118,27 @@ function submit(state: GameState, challenge: Challenge, now: number): KeyResult 
       state: {
         ...state,
         mistakes: state.mistakes + 1,
+        lastPerformance: null,
         message: "Not quite. Match the target and leave the cursor at the goal marker.",
       },
       quit: false,
     };
   }
 
-  const score = scoreChallenge(state, challenge, now);
-  const totalScore = state.totalScore + score;
+  const performance = keyPerformance(state.keyCount, challenge.idealKeys);
+  const totalKeys = state.totalKeys + state.keyCount;
   const completed = state.completed + 1;
+  const message = resultMessage(state, challenge, performance);
 
   if (state.challengeIndex === challenges.length - 1) {
     return {
       state: {
         ...state,
-        totalScore,
+        totalKeys,
         completed,
-        lastScore: score,
-        message: `All drills complete. Final score: ${totalScore}.`,
+        lastKeyCount: state.keyCount,
+        lastPerformance: performance,
+        message: `All drills complete. Used ${totalKeys} keyboard presses.`,
         finished: true,
       },
       quit: false,
@@ -130,13 +148,12 @@ function submit(state: GameState, challenge: Challenge, now: number): KeyResult 
   return {
     state: makeChallengeState(
       state.challengeIndex + 1,
-      totalScore,
+      totalKeys,
       now,
-      state.focusUsed
-        ? `Correct. +${score} points.`
-        : `Correct. +${score} points. Use ${challenge.focusLabel} next time for the shortcut bonus.`,
+      message,
       completed,
-      score,
+      state.keyCount,
+      performance,
     ),
     quit: false,
   };
@@ -146,22 +163,31 @@ function solved(editor: EditorState, challenge: Challenge): boolean {
   return editor.text === challenge.target && editor.cursor === challenge.targetCursor;
 }
 
-function scoreChallenge(state: GameState, challenge: Challenge, now: number): number {
-  const elapsedSeconds = Math.max(0, (now - state.startedAt) / 1000);
-  const extraKeys = Math.max(0, state.keyCount - challenge.idealKeys);
-  const accuracy = Math.max(0, 100 - state.mistakes * 10 - extraKeys * 2);
-  const speedBonus = Math.max(0, Math.round(40 - elapsedSeconds * 2));
-  const shortcutBonus = state.focusUsed ? 30 : 0;
-  return accuracy + speedBonus + shortcutBonus;
+function resultMessage(
+  state: GameState,
+  challenge: Challenge,
+  performance: KeyPerformance,
+): string {
+  const keyLabel = state.keyCount === 1 ? "key press" : "key presses";
+  const rating = performance === "perfect"
+    ? "Perfect."
+    : performance === "close"
+      ? "Close to the expected amount."
+      : "Too many key presses.";
+  const shortcutReminder = state.focusUsed
+    ? ""
+    : ` Use ${challenge.focusLabel} next time for the shortcut.`;
+  return `Correct. ${state.keyCount} ${keyLabel}. ${rating}${shortcutReminder}`;
 }
 
 function makeChallengeState(
   challengeIndex: number,
-  totalScore: number,
+  totalKeys: number,
   now: number,
   message: string,
   completed = 0,
-  lastScore: number | null = null,
+  lastKeyCount: number | null = null,
+  lastPerformance: KeyPerformance | null = null,
 ): GameState {
   const challenge = challenges[challengeIndex];
   if (challenge === undefined) {
@@ -172,9 +198,10 @@ function makeChallengeState(
       keyCount: 0,
       mistakes: 0,
       focusUsed: false,
-      totalScore,
+      totalKeys,
       completed,
-      lastScore,
+      lastKeyCount,
+      lastPerformance,
       message,
       finished: true,
     };
@@ -187,9 +214,10 @@ function makeChallengeState(
     keyCount: 0,
     mistakes: 0,
     focusUsed: false,
-    totalScore,
+    totalKeys,
     completed,
-    lastScore,
+    lastKeyCount,
+    lastPerformance,
     message,
     finished: false,
   };

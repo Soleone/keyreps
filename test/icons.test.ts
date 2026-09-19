@@ -15,5 +15,6 @@ test("Nerd Font mode exposes the restrained landmark set", () => {
 
   assert.equal(icons.nerdFont, true);
   assert.notEqual(icons.keyboard, "");
+  assert.equal(icons.goal, "\uf062");
   assert.equal(iconLabel(icons.hint, "GUIDANCE").endsWith("GUIDANCE"), true);
 });

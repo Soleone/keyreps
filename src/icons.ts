@@ -35,7 +35,7 @@ const nerdFontIcons: TerminalIcons = {
   keyboard: "\uf11c",
   key: "\uf084",
   target: "\uf140",
-  goal: "\uf05b",
+  goal: "\uf062",
   terminal: "\uf120",
   hint: "\uf0eb",
   complete: "\uf091",

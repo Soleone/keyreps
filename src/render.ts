@@ -1,5 +1,5 @@
 import { challenges } from "./challenges.js";
-import { currentChallenge, type GameState } from "./game.js";
+import { currentChallenge, keyPerformance, type GameState, type KeyPerformance } from "./game.js";
 import type { EditorState } from "./editor.js";
 import { createThemeManager, type ThemeColor } from "./theme.js";
 import { createTerminalIcons, iconLabel } from "./icons.js";
@@ -9,6 +9,8 @@ const RESET = `${ESC}0m`;
 const CLEAR_SCREEN = `${ESC}2J${ESC}H`;
 const PANEL_WIDTH = 76;
 const PANEL_CONTENT_WIDTH = PANEL_WIDTH - 4;
+const INPUT_WIDTH = PANEL_CONTENT_WIDTH - 2;
+const INPUT_CONTENT_WIDTH = INPUT_WIDTH - 4;
 const ANSI_SEQUENCE = /\u001b\[[0-9;?]*[ -/]*[@-~]/g;
 const themeManager = createThemeManager();
 const icons = createTerminalIcons();
@@ -28,39 +30,34 @@ export function renderGame(state: GameState, now = Date.now()): string {
   }
 
   const elapsed = formatSeconds(Math.max(0, (now - state.startedAt) / 1000));
-  const drillName = challenge.id.replaceAll("-", " ").toUpperCase();
+  const drillName = formatDrillName(challenge.id);
+  const drillLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${drillName}`;
+  const challengeHeading = alignColumns(
+    `  ${paint("accent", drillLabel, "1")}`,
+    `  ${renderProgressLabel(state)}`,
+  );
   const challengeContent = [
+    challengeHeading,
+    "",
     `  ${paint("text", challenge.title, "1")}`,
     ...renderInstructionList(challenge.instructions),
     "",
-    paint("info", iconLabel(icons.key, "SHORTCUT"), "2"),
     `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
     "",
-    paint("info", iconLabel(icons.target, "TARGET  ·  GOAL MARKER"), "2"),
-    `  ${paint("dim", formatTarget(challenge.target), "2")}`,
-    `  ${targetMarker(challenge.target, challenge.targetCursor)}`,
+    ...renderEditorBlock(state.editor),
     "",
-    paint("secondary", iconLabel(icons.terminal, "EDITOR"), "2"),
-    `  ${paint("accent", "$", "1")} ${renderEditorLine(state.editor)}`,
-  ];
-
-  const guidanceText = state.message.length > 0 ? state.message : challenge.hint;
-  const guidanceRole: ThemeColor = state.message.length > 0 ? "text" : "muted";
-  const guidance = [
-    `  ${state.message.length > 0 ? paint("warning", "STATUS", "1") : paint("info", "HINT", "2")}`,
-    ...wrapText(guidanceText, PANEL_CONTENT_WIDTH - 4).map(
-      (line) => `  ${paint(guidanceRole, line, state.message.length > 0 ? "1" : "2")}`,
-    ),
+    paint("info", "GOAL", "2"),
+    `  ${paint("dim", `$ ${formatTarget(challenge.target)}`, "2")}`,
+    `  ${targetMarker(challenge.target, challenge.targetCursor)}`,
+    ...(state.message.length > 0 ? ["", renderStatus(state.message, state.lastPerformance)] : []),
   ];
 
   const lines = [
     ...renderHeader(state),
     "",
-    ...panel(`DRILL ${String(state.challengeIndex + 1).padStart(2, "0")}  ·  ${drillName}`, challengeContent),
+    ...challengeContent,
     "",
     renderStatsStrip(state, elapsed),
-    "",
-    ...panel(iconLabel(icons.hint, "GUIDANCE"), guidance),
     "",
     renderControls(),
   ];
@@ -70,18 +67,20 @@ export function renderGame(state: GameState, now = Date.now()): string {
 
 function renderFinished(state: GameState, now: number): string {
   const elapsed = formatSeconds(Math.max(0, (now - state.startedAt) / 1000));
+  const idealTotal = challenges.reduce((total, challenge) => total + challenge.idealKeys, 0);
+  const totalPerformance = keyPerformance(state.totalKeys, idealTotal);
   const result = [
-    `  ${paint("success", iconLabel(icons.complete, "All keyboard drills cleared."), "1")}`,
+    `  ${paint("success", "All keyboard drills cleared.", "1")}`,
     "",
     `  ${paint("muted", "DRILLS COMPLETED", "2")}  ${paint("text", `${state.completed} / ${challenges.length}`, "1")}`,
-    `  ${paint("muted", "FINAL SCORE", "2")}       ${paint("warning", String(state.totalScore), "1")}`,
-    state.lastScore === null
+    `  ${paint("muted", "KEY PRESSES", "2")}       ${paint(performanceColor(totalPerformance), `${state.totalKeys} · ${performanceLabel(totalPerformance)}`, "1")}`,
+    state.lastKeyCount === null
       ? ""
-      : `  ${paint("muted", "LAST DRILL", "2")}          ${paint("accent", `+${state.lastScore}`, "1")}`,
+      : `  ${paint("muted", "LAST DRILL", "2")}          ${paint(performanceColor(state.lastPerformance), `${state.lastKeyCount} ${keyPressLabel(state.lastKeyCount)} · ${performanceLabel(state.lastPerformance)}`, "1")}`,
   ];
 
   const lines = [
-    ...renderHeader(state, "UNIX KEYBOARD KATAS  /  COMPLETE"),
+    ...renderHeader(state, "UNIX KEYBOARD KATAS  /  COMPLETE", true),
     "",
     ...panel(iconLabel(icons.complete, "RUN COMPLETE"), result),
     "",
@@ -102,32 +101,33 @@ export function renderEditorLine(editor: EditorState): string {
   return `${before}${paint("accent", current, "7;1")}${after}`;
 }
 
-function renderHeader(state: GameState, title = "UNIX KEYBOARD KATAS"): string[] {
-  const completed = Math.max(0, Math.min(state.completed, challenges.length));
-  const progress = progressBar(completed, challenges.length, 14);
+function renderHeader(state: GameState, title = "UNIX KEYBOARD KATAS", includeProgress = false): string[] {
   const drillLabel = state.finished
     ? "ALL DRILLS CLEARED"
     : `DRILL ${String(state.challengeIndex + 1).padStart(2, "0")} / ${String(challenges.length).padStart(2, "0")}`;
+  const lines = [headerLine(alignColumns(`  Typegod · ${title}`, `  ${drillLabel}`))];
 
+  if (includeProgress) {
+    lines.push(alignColumns("", `  ${renderProgressLabel(state)}`));
+  }
+
+  return lines;
+}
+
+function renderProgressLabel(state: GameState): string {
+  const completed = Math.max(0, Math.min(state.completed, challenges.length));
+  const progress = progressBar(completed, challenges.length, 14);
   const percent = Math.round((completed / challenges.length) * 100);
-  return [
-    headerLine(alignColumns(`  ${iconLabel(icons.keyboard, title)}`, `  ${drillLabel}`)),
-    alignColumns(
-      `  ${paint("muted", "TYPEGOD  ·  TERMINAL PRACTICE", "2")}`,
-      `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("muted", `${percent}%`, "2")}`,
-    ),
-  ];
+  return `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("muted", `${percent}%`, "2")}`;
 }
 
 function renderStatsStrip(state: GameState, elapsed: string): string {
-  const lastScore = state.lastScore === null ? "n/a" : `+${state.lastScore}`;
   const content = [
     `TIME ${elapsed}`,
     `KEYS ${state.keyCount}`,
     `MISSES ${state.mistakes}`,
-    `SCORE ${state.totalScore}`,
-    `LAST ${lastScore}`,
-  ].join("   ·   ");
+    `TOTAL ${state.totalKeys}`,
+  ].join(" · ");
 
   return backgroundLine(`  ${content}`);
 }
@@ -169,16 +169,54 @@ function border(value: string): string {
   return paint("border", value, "2");
 }
 
+function formatDrillName(id: string): string {
+  const words = id.replaceAll("-", " ").toLowerCase().split(" ");
+  const first = words[0] ?? "";
+  words[0] = first.length > 0 ? `${first[0]?.toUpperCase() ?? ""}${first.slice(1)}` : first;
+  return words.join(" ");
+}
+
 function formatTarget(target: string): string {
   return target.length === 0 ? "· empty line" : target;
 }
 
+function renderEditorBlock(editor: EditorState): string[] {
+  const fill = Math.max(1, INPUT_WIDTH - 2);
+  const top = `${inputBorder("╭")}${inputBorder("─".repeat(fill))}${inputBorder("╮")}`;
+  const value = `${paint("accent", "$", "1")} ${renderEditorLine(editor)}`;
+  const padding = Math.max(0, INPUT_CONTENT_WIDTH - visibleLength(value));
+  const row = `${inputBorder("│")} ${value}${" ".repeat(padding)} ${inputBorder("│")}`;
+  const bottom = `${inputBorder("╰")}${inputBorder("─".repeat(INPUT_WIDTH - 2))}${inputBorder("╯")}`;
+  return [top, row, bottom];
+}
+
+function inputBorder(value: string, attributes = "2"): string {
+  return paint("accent", value, attributes);
+}
+
+function renderStatus(message: string, performance: KeyPerformance | null): string {
+  const prefix = "STATUS · ";
+  const available = PANEL_CONTENT_WIDTH - 2 - prefix.length;
+  return `  ${paint("warning", "STATUS", "1")} ${paint("dim", "·", "2")} ${paint(performanceColor(performance), truncateSingleLine(message, available), "1")}`;
+}
+
+function truncateSingleLine(value: string, width: number): string {
+  const characters = Array.from(value);
+  if (characters.length <= width) {
+    return value;
+  }
+
+  return `${characters.slice(0, Math.max(0, width - 1)).join("")}…`;
+}
+
 function targetMarker(target: string, cursor: number): string {
-  const offset = Math.min(cursor, Array.from(target).length);
+  const targetLength = Array.from(target).length;
+  const offset = Math.max(0, Math.min(cursor, targetLength));
+  const markerOffset = offset > 0 && offset < targetLength ? offset - 1 : offset;
   const marker = icons.goal.length > 0
-    ? iconLabel(icons.goal, "target cursor")
-    : "^ target cursor";
-  return `${" ".repeat(offset)}${paint("dim", marker, "2")}`;
+    ? iconLabel(icons.goal, "cursor")
+    : "^ cursor";
+  return `  ${" ".repeat(markerOffset)}${paint("dim", marker, "2")}`;
 }
 
 function progressBar(completed: number, total: number, width: number): { filled: string; empty: string } {
@@ -248,6 +286,36 @@ function paint(role: ThemeColor, value: string, attributes = ""): string {
 
 function paintRaw(code: string, value: string): string {
   return `${ESC}${code}m${value}${RESET}`;
+}
+
+function performanceColor(performance: KeyPerformance | null): ThemeColor {
+  switch (performance) {
+    case "perfect":
+      return "success";
+    case "close":
+      return "warning";
+    case "poor":
+      return "error";
+    default:
+      return "warning";
+  }
+}
+
+function performanceLabel(performance: KeyPerformance | null): string {
+  switch (performance) {
+    case "perfect":
+      return "Perfect";
+    case "close":
+      return "Close";
+    case "poor":
+      return "Too many";
+    default:
+      return "n/a";
+  }
+}
+
+function keyPressLabel(count: number): string {
+  return count === 1 ? "key press" : "key presses";
 }
 
 function formatSeconds(seconds: number): string {
