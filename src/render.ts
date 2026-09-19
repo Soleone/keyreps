@@ -1,5 +1,11 @@
-import { challenges } from "./challenges.js";
-import { currentChallenge, keyPerformance, type GameState, type KeyPerformance } from "./game.js";
+import { challenges, type Challenge } from "./challenges.js";
+import {
+  currentChallenge,
+  keyPerformance,
+  shouldShowInstructions,
+  type GameState,
+  type KeyPerformance,
+} from "./game.js";
 import type { EditorState } from "./editor.js";
 import { createThemeManager, type ThemeColor } from "./theme.js";
 import { createTerminalIcons, iconLabel } from "./icons.js";
@@ -39,9 +45,7 @@ export function renderGame(state: GameState): string {
     challengeHeading,
     "",
     `  ${paint("text", challenge.title, "1")}`,
-    ...renderInstructionList(challenge.instructions),
-    "",
-    `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
+    ...renderChallengeGuidance(state, challenge),
     "",
     ...renderEditorBlock(state.editor),
     "",
@@ -240,6 +244,28 @@ function progressBar(completed: number, total: number, width: number): { filled:
 function alignColumns(left: string, right: string): string {
   const spaces = Math.max(1, PANEL_WIDTH - visibleLength(left) - visibleLength(right));
   return `${left}${" ".repeat(spaces)}${right}`;
+}
+
+function renderChallengeGuidance(state: GameState, challenge: Challenge): string[] {
+  const expert = challenge.tier === "expert";
+  const revealed = shouldShowInstructions(state, challenge);
+
+  if (expert && !revealed) {
+    return [
+      `  ${paint("muted", "EXPERT · instructions hidden", "1")}`,
+      `  ${paint("dim", "Solve from memory. Guidance appears after a wasted key press.", "2")}`,
+    ];
+  }
+
+  const guidance = renderInstructionList(challenge.instructions);
+  if (expert) {
+    guidance.unshift(`  ${paint("warning", "Guidance unlocked after a wasted key press.", "2")}`, "");
+  }
+  guidance.push(
+    "",
+    `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
+  );
+  return guidance;
 }
 
 function renderInstructionList(instructions: string[]): string[] {

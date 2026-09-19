@@ -61,6 +61,18 @@ const optimalPaths: Record<string, Key[]> = {
   "yank-command": [control("u"), control("y")],
   "transpose-at-end": [control("t")],
   "delete-option-character": [control("d")],
+  "combo-prefix-and-append": [control("a"), text("sudo "), control("e"), text(" --branch")],
+  "combo-remove-and-append": [alt("b"), alt("b"), alt("d"), control("e"), text(" --detach")],
+  "combo-restore-and-trim": [control("u"), text("sudo "), control("y"), control("w")],
+  "combo-repair-and-replace": [control("t"), control("e"), control("w"), text(" --verbose")],
+  "combo-prefix-and-insert-option": [control("a"), text("sudo "), alt("f"), alt("f"), text(" --dry-run")],
+  "combo-strip-options-and-rebuild": [control("u"), control("e"), control("w"), control("w"), text(" --message release")],
+  "expert-release-command": [control("w"), control("w"), control("a"), text("sudo "), control("e"), text(" --message release --no-verify")],
+  "expert-compose-file": [control("w"), control("w"), alt("b"), text("-f compose.prod.yml "), control("e"), text(" --wait")],
+  "expert-repair-deploy": [control("w"), control("w"), text(" production.yaml"), alt("b"), alt("b"), text("--server-side "), control("e")],
+  "expert-test-command": [control("w"), control("y"), control("a"), text("env NODE_ENV=production "), control("e"), text(" --reporter=spec")],
+  "expert-service-options": [control("a"), alt("d"), alt("f"), alt("f"), text(" --force")],
+  "expert-reorder-diff": [alt("b"), alt("b"), alt("d"), control("e"), text(" --word-diff")],
 };
 
 test("every lesson's optimal path matches its perfect key count", () => {

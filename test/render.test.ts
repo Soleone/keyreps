@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { challenges } from "../src/challenges.js";
+import { createEditor } from "../src/editor.js";
 import { handleKey, startGame } from "../src/game.js";
 import { renderGame } from "../src/render.js";
 import type { Key } from "../src/types.js";
@@ -105,4 +107,28 @@ test("shows the final keyboard press total", () => {
   assert.match(output, /KEY PRESSES\s+46/);
   assert.match(output, /LAST DRILL\s+1 key press · Perfect/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
+});
+
+test("hides expert instructions until a player wastes a key press", () => {
+  const expertIndex = challenges.findIndex((challenge) => challenge.tier === "expert");
+  const challenge = challenges[expertIndex];
+  assert.ok(challenge);
+
+  const initial = {
+    ...startGame(),
+    challengeIndex: expertIndex,
+    editor: createEditor(challenge.start, challenge.startCursor),
+  };
+  const hidden = plainRender(initial);
+
+  assert.match(hidden, /EXPERT · instructions hidden/);
+  assert.doesNotMatch(hidden, /Remove --amend and --no-edit/);
+
+  const wasted = plainRender({
+    ...initial,
+    keyCount: challenge.idealKeys + 1,
+  });
+
+  assert.match(wasted, /Guidance unlocked after a wasted key press/);
+  assert.match(wasted, /• Remove --amend and --no-edit/);
 });

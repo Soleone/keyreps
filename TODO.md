@@ -5,15 +5,14 @@
 
 ## Next
 
-- [ ] **build more combination stages at the end**
-  - intermediate stages should combine multiple commands
-  - expert tier stages should hide the instructions upfront and just show if you wasted keystrokes
-
 ## Later
 
 
 ## Archive
 
+- [x] **build more combination stages at the end**
+  - intermediate stages combine multiple commands
+  - expert tier stages hide instructions until a wasted key press reveals them
 - [x] **some commands should probably have multiple stages** — different scenarios, build muscle memory
 - [x] **Don't use black tics for wrong characters, those don't get rendered anyway.**
 - [x] **make "target cursor" more muted, yellow or accent is overkill. also try to make more elegant in how it looks with nerdfont potentially**

@@ -43,6 +43,10 @@ colors. Set `TYPEGOD_THEME_FILE` to preview another Omarchy-compatible
 
 ## What it teaches
 
+The drills progress from individual shortcuts to command combinations. Intermediate
+stages require several editing commands in one repair. Expert stages hide their
+instructions until a wasted key press or failed attempt reveals the safety net.
+
 - `Ctrl+A` and `Ctrl+E`: start and end of line
 - `Ctrl+B` and `Ctrl+F`: character movement
 - `Alt+B` and `Alt+F`: word movement

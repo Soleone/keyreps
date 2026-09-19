@@ -38,6 +38,19 @@ export function currentChallenge(state: GameState): Challenge | undefined {
   return challenges[state.challengeIndex];
 }
 
+/**
+ * Expert drills are memory tests. Reveal their instructions only after the
+ * player has spent more than the ideal number of key presses or made a
+ * failed/unhandled attempt.
+ */
+export function shouldShowInstructions(state: GameState, challenge?: Challenge): boolean {
+  const activeChallenge = challenge ?? currentChallenge(state);
+  return activeChallenge === undefined
+    || activeChallenge.tier !== "expert"
+    || state.keyCount > activeChallenge.idealKeys
+    || state.mistakes > 0;
+}
+
 export function keyPerformance(keyCount: number, idealKeys: number): KeyPerformance {
   if (keyCount <= idealKeys) {
     return "perfect";

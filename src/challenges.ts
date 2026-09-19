@@ -1,7 +1,10 @@
 import type { EditorAction } from "./editor.js";
 
+export type ChallengeTier = "basic" | "intermediate" | "expert";
+
 export interface Challenge {
   id: string;
+  tier: ChallengeTier;
   title: string;
   instructions: string[];
   hint: string;
@@ -21,6 +24,7 @@ const length = (value: string): number => Array.from(value).length;
 export const challenges: Challenge[] = [
   {
     id: "line-start",
+    tier: "basic",
     title: "Get to the start",
     instructions: ["Prefix the command with sudo followed by a space."],
     hint: "Ctrl+A jumps to the beginning of the line.",
@@ -35,6 +39,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "line-end",
+    tier: "basic",
     title: "Get to the end",
     instructions: ["Append --short to the command."],
     hint: "Ctrl+E jumps to the end of the line.",
@@ -49,6 +54,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "char-left",
+    tier: "basic",
     title: "One character back",
     instructions: ["Move left once.", "Insert t."],
     hint: "Ctrl+B moves backward by one character.",
@@ -63,6 +69,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "char-right",
+    tier: "basic",
     title: "One character forward",
     instructions: ["Move right once.", "Insert t."],
     hint: "Ctrl+F moves forward by one character.",
@@ -77,6 +84,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "word-left",
+    tier: "basic",
     title: "Jump back a word",
     instructions: ["Move to the start of feature.", "Insert switch followed by a space."],
     hint: "Alt+B or Ctrl+Left moves backward by one word.",
@@ -91,6 +99,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "word-right",
+    tier: "basic",
     title: "Jump forward a word",
     instructions: ["Move past login.", "Insert --verbose with a leading space."],
     hint: "Alt+F or Ctrl+Right moves forward by one word.",
@@ -105,6 +114,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-to-end",
+    tier: "basic",
     title: "Clear to the end",
     instructions: ["Remove --short while keeping git status and its trailing space."],
     hint: "Ctrl+K kills everything from the cursor to the end.",
@@ -119,6 +129,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-to-start",
+    tier: "basic",
     title: "Clear to the start",
     instructions: ["Delete the whole temporary command."],
     hint: "Ctrl+U kills everything from the start to the cursor.",
@@ -133,6 +144,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-previous-word",
+    tier: "basic",
     title: "Kill the previous word",
     instructions: ["Remove the word message."],
     hint: "Ctrl+W kills the previous word and its separating space.",
@@ -147,6 +159,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-next-word",
+    tier: "basic",
     title: "Kill the next word",
     instructions: ["From after git, remove commit and its trailing space."],
     hint: "Alt+D kills the next word and its following space.",
@@ -161,6 +174,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "yank",
+    tier: "basic",
     title: "Yank it back",
     instructions: ["Kill --short.", "Restore it with one yank."],
     hint: "Ctrl+Y inserts the most recently killed text.",
@@ -175,6 +189,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "transpose",
+    tier: "basic",
     title: "Transpose a typo",
     instructions: ["Fix stauts by transposing the two middle letters."],
     hint: "Ctrl+T swaps the character before and at the cursor.",
@@ -189,6 +204,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "delete-character",
+    tier: "basic",
     title: "Delete under the cursor",
     instructions: ["Delete the extra t under the cursor."],
     hint: "Ctrl+D deletes the character at the cursor.",
@@ -206,6 +222,7 @@ export const challenges: Challenge[] = [
   // muscle memory instead of tying each shortcut to one fixed sentence.
   {
     id: "line-start-prefix",
+    tier: "basic",
     title: "Prefix another command",
     instructions: ["Prefix the test command with env APP_ENV=test followed by a space."],
     hint: "Ctrl+A jumps to the beginning of the line.",
@@ -220,6 +237,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "line-end-redirect",
+    tier: "basic",
     title: "Append a redirect",
     instructions: ["Append 2>&1 to the test command with a leading space."],
     hint: "Ctrl+E jumps to the end of the line.",
@@ -234,6 +252,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "char-left-missing-letter",
+    tier: "basic",
     title: "Repair from one step back",
     instructions: ["Move left once.", "Insert n."],
     hint: "Ctrl+B moves backward by one character.",
@@ -248,6 +267,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "char-right-missing-letter",
+    tier: "basic",
     title: "Repair one character forward",
     instructions: ["Move right once.", "Insert c."],
     hint: "Ctrl+F moves forward by one character.",
@@ -262,6 +282,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "word-left-option",
+    tier: "basic",
     title: "Insert before the final argument",
     instructions: ["Move to the start of production.", "Insert --dry-run followed by a space."],
     hint: "Alt+B or Ctrl+Left moves backward by one word.",
@@ -276,6 +297,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "word-right-option",
+    tier: "basic",
     title: "Insert after the first command",
     instructions: ["Move past docker.", "Insert --rm with a leading space."],
     hint: "Alt+F or Ctrl+Right moves forward by one word.",
@@ -290,6 +312,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-to-end-options",
+    tier: "basic",
     title: "Clear several trailing options",
     instructions: ["Remove the options after git commit while keeping its trailing space."],
     hint: "Ctrl+K kills everything from the cursor to the end.",
@@ -304,6 +327,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-to-start-prefix",
+    tier: "basic",
     title: "Clear a command prefix",
     instructions: ["Remove sudo while keeping the rest of the command."],
     hint: "Ctrl+U kills everything from the start to the cursor.",
@@ -318,6 +342,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-previous-option",
+    tier: "basic",
     title: "Kill a previous option",
     instructions: ["From after --amend, remove that option and its separating space."],
     hint: "Ctrl+W kills the previous word and its separating space.",
@@ -332,6 +357,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "kill-next-prefix",
+    tier: "basic",
     title: "Kill the next word",
     instructions: ["From the start, remove sudo and its following space."],
     hint: "Alt+D kills the next word and its following space.",
@@ -346,6 +372,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "yank-command",
+    tier: "basic",
     title: "Yank a whole command",
     instructions: ["Kill the command.", "Restore it with one yank."],
     hint: "Ctrl+Y inserts the most recently killed text.",
@@ -360,6 +387,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "transpose-at-end",
+    tier: "basic",
     title: "Transpose at the end",
     instructions: ["Fix statsu by transposing its final two letters."],
     hint: "Ctrl+T swaps the character before and at the cursor.",
@@ -374,6 +402,7 @@ export const challenges: Challenge[] = [
   },
   {
     id: "delete-option-character",
+    tier: "basic",
     title: "Delete an extra option character",
     instructions: ["Delete the extra dash under the cursor."],
     hint: "Ctrl+D deletes the character at the cursor.",
@@ -385,5 +414,230 @@ export const challenges: Challenge[] = [
     focusLabel: "Ctrl+D",
     focusDescription: "delete next character",
     idealKeys: 1,
+  },
+
+  // Intermediate drills combine several editing commands into one repair so
+  // the player has to choose an order instead of repeating one shortcut.
+  {
+    id: "combo-prefix-and-append",
+    tier: "intermediate",
+    title: "Build a longer command",
+    instructions: [
+      "Add sudo and a space at the start.",
+      "Append --branch with a leading space.",
+    ],
+    hint: "Use Ctrl+A for the start and Ctrl+E for the end.",
+    start: "git status --short",
+    startCursor: length("git status --short"),
+    target: "sudo git status --short --branch",
+    targetCursor: length("sudo git status --short --branch"),
+    focus: "line-start",
+    focusLabel: "Ctrl+A + Ctrl+E",
+    focusDescription: "start and end of line",
+    idealKeys: 1 + length("sudo ") + 1 + length(" --branch"),
+  },
+  {
+    id: "combo-remove-and-append",
+    tier: "intermediate",
+    title: "Remove and append an option",
+    instructions: [
+      "Remove --rm from the middle of the command.",
+      "Append --detach with a leading space.",
+    ],
+    hint: "Use Alt+B to find --rm, Alt+D to remove it, and Ctrl+E to finish.",
+    start: "docker run --rm alpine",
+    startCursor: length("docker run --rm alpine"),
+    target: "docker run alpine --detach",
+    targetCursor: length("docker run alpine --detach"),
+    focus: "kill-next-word",
+    focusLabel: "Alt+B ×2 + Alt+D + Ctrl+E",
+    focusDescription: "remove and append",
+    idealKeys: 1 + 1 + 1 + 1 + length(" --detach"),
+  },
+  {
+    id: "combo-restore-and-trim",
+    tier: "intermediate",
+    title: "Restore, then trim",
+    instructions: [
+      "Clear the line and prefix the restored command with sudo.",
+      "Yank the original command back, then remove --short.",
+    ],
+    hint: "Combine Ctrl+U, Ctrl+Y, and Ctrl+W to reshape the command.",
+    start: "git status --short",
+    startCursor: length("git status --short"),
+    target: "sudo git status",
+    targetCursor: length("sudo git status"),
+    focus: "kill-to-start",
+    focusLabel: "Ctrl+U + Ctrl+Y + Ctrl+W",
+    focusDescription: "clear, restore, and trim",
+    idealKeys: 1 + length("sudo ") + 1 + 1,
+  },
+  {
+    id: "combo-repair-and-replace",
+    tier: "intermediate",
+    title: "Repair and replace an option",
+    instructions: [
+      "Transpose the typo in stauts.",
+      "Replace --force with --verbose.",
+    ],
+    hint: "Use Ctrl+T, Ctrl+E, and Ctrl+W in that order.",
+    start: "git stauts --force",
+    startCursor: 8,
+    target: "git status --verbose",
+    targetCursor: length("git status --verbose"),
+    focus: "transpose",
+    focusLabel: "Ctrl+T + Ctrl+E + Ctrl+W",
+    focusDescription: "repair and replace",
+    idealKeys: 1 + 1 + 1 + length(" --verbose"),
+  },
+  {
+    id: "combo-prefix-and-insert-option",
+    tier: "intermediate",
+    title: "Prefix and insert an option",
+    instructions: [
+      "Prefix the deploy command with sudo and a space.",
+      "Insert --dry-run before staging.",
+    ],
+    hint: "Use Ctrl+A, then move forward by two words before inserting the option.",
+    start: "git deploy staging",
+    startCursor: length("git deploy staging"),
+    target: "sudo git deploy --dry-run staging",
+    targetCursor: length("sudo git deploy --dry-run"),
+    focus: "line-start",
+    focusLabel: "Ctrl+A + Alt+F ×2",
+    focusDescription: "prefix and insert",
+    idealKeys: 1 + length("sudo ") + 1 + 1 + length(" --dry-run"),
+  },
+  {
+    id: "combo-strip-options-and-rebuild",
+    tier: "intermediate",
+    title: "Strip options and rebuild",
+    instructions: [
+      "Remove sudo and both existing options.",
+      "Append --message release.",
+    ],
+    hint: "Clear the prefix, jump to the end, and kill the two old options.",
+    start: "sudo git commit --amend --no-edit",
+    startCursor: length("sudo "),
+    target: "git commit --message release",
+    targetCursor: length("git commit --message release"),
+    focus: "kill-to-start",
+    focusLabel: "Ctrl+U + Ctrl+E + Ctrl+W ×2",
+    focusDescription: "strip and rebuild",
+    idealKeys: 1 + 1 + 1 + 1 + length(" --message release"),
+  },
+
+  // Expert drills deliberately keep their instructions out of sight until a
+  // wasted key or failed attempt shows that the player needs a safety net.
+  {
+    id: "expert-release-command",
+    tier: "expert",
+    title: "Rewrite a release command",
+    instructions: [
+      "Remove --amend and --no-edit.",
+      "Prefix the command with sudo.",
+      "Append --message release --no-verify.",
+    ],
+    hint: "Use two word kills, then rebuild the command at its boundaries.",
+    start: "git commit --amend --no-edit",
+    startCursor: length("git commit --amend --no-edit"),
+    target: "sudo git commit --message release --no-verify",
+    targetCursor: length("sudo git commit --message release --no-verify"),
+    focus: "kill-previous-word",
+    focusLabel: "Ctrl+W ×2 + Ctrl+A + Ctrl+E",
+    focusDescription: "rewrite from memory",
+    idealKeys: 1 + 1 + 1 + length("sudo ") + 1 + length(" --message release --no-verify"),
+  },
+  {
+    id: "expert-compose-file",
+    tier: "expert",
+    title: "Add a compose file",
+    instructions: [
+      "Remove --detach and --build.",
+      "Insert -f compose.prod.yml before up.",
+      "Append --wait.",
+    ],
+    hint: "Trim from the end, move back to up, then finish at the line end.",
+    start: "docker compose up --detach --build",
+    startCursor: length("docker compose up --detach --build"),
+    target: "docker compose -f compose.prod.yml up --wait",
+    targetCursor: length("docker compose -f compose.prod.yml up --wait"),
+    focus: "kill-previous-word",
+    focusLabel: "Ctrl+W ×2 + Alt+B + Ctrl+E",
+    focusDescription: "reposition a command",
+    idealKeys: 1 + 1 + 1 + length("-f compose.prod.yml ") + 1 + length(" --wait"),
+  },
+  {
+    id: "expert-repair-deploy",
+    tier: "expert",
+    title: "Repair a deploy command",
+    instructions: [
+      "Replace prod.yaml with production.yaml.",
+      "Insert --server-side before -f.",
+    ],
+    hint: "Kill the two trailing words, restore the filename, then move back twice.",
+    start: "kubectl apply -f prod.yaml --dryrun",
+    startCursor: length("kubectl apply -f prod.yaml --dryrun"),
+    target: "kubectl apply --server-side -f production.yaml",
+    targetCursor: length("kubectl apply --server-side -f production.yaml"),
+    focus: "kill-previous-word",
+    focusLabel: "Ctrl+W ×2 + Alt+B ×2 + Ctrl+E",
+    focusDescription: "repair and reposition",
+    idealKeys: 1 + 1 + length(" production.yaml") + 1 + 1 + length("--server-side ") + 1,
+  },
+  {
+    id: "expert-test-command",
+    tier: "expert",
+    title: "Extend a test command",
+    instructions: [
+      "Restore --runInBand after briefly removing it.",
+      "Prefix the command with env NODE_ENV=production.",
+      "Append --reporter=spec.",
+    ],
+    hint: "Use the kill ring, then work from the start and end of the line.",
+    start: "npm test -- --runInBand",
+    startCursor: length("npm test -- --runInBand"),
+    target: "env NODE_ENV=production npm test -- --runInBand --reporter=spec",
+    targetCursor: length("env NODE_ENV=production npm test -- --runInBand --reporter=spec"),
+    focus: "yank",
+    focusLabel: "Ctrl+W + Ctrl+Y + Ctrl+A + Ctrl+E",
+    focusDescription: "restore and extend",
+    idealKeys: 1 + 1 + 1 + length("env NODE_ENV=production ") + 1 + length(" --reporter=spec"),
+  },
+  {
+    id: "expert-service-options",
+    tier: "expert",
+    title: "Reposition a service option",
+    instructions: [
+      "Remove sudo.",
+      "Insert --force between restart and api.",
+    ],
+    hint: "Delete the prefix, then move forward by two words from the new start.",
+    start: "sudo systemctl restart api --no-block",
+    startCursor: length("sudo systemctl restart api --no-block"),
+    target: "systemctl restart --force api --no-block",
+    targetCursor: length("systemctl restart --force"),
+    focus: "kill-next-word",
+    focusLabel: "Ctrl+A + Alt+D + Alt+F ×2",
+    focusDescription: "reposition an option",
+    idealKeys: 1 + 1 + 1 + 1 + length(" --force"),
+  },
+  {
+    id: "expert-reorder-diff",
+    tier: "expert",
+    title: "Replace diff options",
+    instructions: [
+      "Remove --cached while keeping --stat.",
+      "Append --word-diff.",
+    ],
+    hint: "Move back by two words, remove --cached, and finish at the line end.",
+    start: "git diff --cached --stat",
+    startCursor: length("git diff --cached --stat"),
+    target: "git diff --stat --word-diff",
+    targetCursor: length("git diff --stat --word-diff"),
+    focus: "kill-next-word",
+    focusLabel: "Alt+B ×2 + Alt+D + Ctrl+E",
+    focusDescription: "replace an option",
+    idealKeys: 1 + 1 + 1 + 1 + length(" --word-diff"),
   },
 ];
