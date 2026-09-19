@@ -5,7 +5,7 @@
 
 ## Next
 
-- [ ] **for the shortcut also add a brief description right after, just a few words**
+- [x] **for the shortcut also add a brief description right after, just a few words**
 - [ ] **current stage instructions should be in a bullet list**
 - [ ] **if available smartly use nerdfont icons** — just dont overdo it, place them elegantly
 - [ ] **some commands should probably have multiple stages** — different scenarios, build muscle memory

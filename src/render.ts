@@ -34,7 +34,7 @@ export function renderGame(state: GameState, now = Date.now()): string {
     ),
     "",
     paint("info", "SHORTCUT", "2"),
-    `  ${paint("accent", challenge.focusLabel, "1")}`,
+    `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
     "",
     paint("info", "TARGET  ·  GOAL MARKER", "2"),
     `  ${paint("dim", formatTarget(challenge.target), "2")}`,

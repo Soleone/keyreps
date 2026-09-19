@@ -11,6 +11,7 @@ export interface Challenge {
   targetCursor: number;
   focus: EditorAction;
   focusLabel: string;
+  focusDescription: string;
   idealKeys: number;
 }
 
@@ -28,6 +29,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("sudo "),
     focus: "line-start",
     focusLabel: "Ctrl+A",
+    focusDescription: "start of line",
     idealKeys: 2,
   },
   {
@@ -41,6 +43,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git status --short"),
     focus: "line-end",
     focusLabel: "Ctrl+E",
+    focusDescription: "end of line",
     idealKeys: 2,
   },
   {
@@ -54,6 +57,7 @@ export const challenges: Challenge[] = [
     targetCursor: 8,
     focus: "move-char-left",
     focusLabel: "Ctrl+B",
+    focusDescription: "move left",
     idealKeys: 2,
   },
   {
@@ -67,6 +71,7 @@ export const challenges: Challenge[] = [
     targetCursor: 8,
     focus: "move-char-right",
     focusLabel: "Ctrl+F",
+    focusDescription: "move right",
     idealKeys: 2,
   },
   {
@@ -80,6 +85,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git switch "),
     focus: "move-word-left",
     focusLabel: "Alt+B / Ctrl+Left",
+    focusDescription: "previous word",
     idealKeys: 2,
   },
   {
@@ -93,6 +99,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git login --verbose"),
     focus: "move-word-right",
     focusLabel: "Alt+F / Ctrl+Right",
+    focusDescription: "next word",
     idealKeys: 2,
   },
   {
@@ -106,6 +113,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git status "),
     focus: "kill-to-end",
     focusLabel: "Ctrl+K",
+    focusDescription: "clear to end",
     idealKeys: 1,
   },
   {
@@ -119,6 +127,7 @@ export const challenges: Challenge[] = [
     targetCursor: 0,
     focus: "kill-to-start",
     focusLabel: "Ctrl+U",
+    focusDescription: "clear to start",
     idealKeys: 1,
   },
   {
@@ -132,6 +141,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git commit"),
     focus: "kill-previous-word",
     focusLabel: "Ctrl+W",
+    focusDescription: "delete previous word",
     idealKeys: 1,
   },
   {
@@ -145,6 +155,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git "),
     focus: "kill-next-word",
     focusLabel: "Alt+D",
+    focusDescription: "delete next word",
     idealKeys: 1,
   },
   {
@@ -158,6 +169,7 @@ export const challenges: Challenge[] = [
     targetCursor: length("git status --short"),
     focus: "yank",
     focusLabel: "Ctrl+Y",
+    focusDescription: "restore last kill",
     idealKeys: 2,
   },
   {
@@ -171,6 +183,7 @@ export const challenges: Challenge[] = [
     targetCursor: 9,
     focus: "transpose",
     focusLabel: "Ctrl+T",
+    focusDescription: "swap characters",
     idealKeys: 1,
   },
   {
@@ -184,6 +197,7 @@ export const challenges: Challenge[] = [
     targetCursor: 6,
     focus: "delete-next-char",
     focusLabel: "Ctrl+D",
+    focusDescription: "delete next character",
     idealKeys: 1,
   },
 ];
