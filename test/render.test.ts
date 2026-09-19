@@ -30,8 +30,9 @@ test("renders each current stage instruction as a bullet", () => {
 
   const output = plainRender(state);
 
-  assert.match(output, /• Move left once\./);
-  assert.match(output, /• Insert t\./);
+  assert.match(output, /• Move left once/);
+  assert.match(output, /• Insert t/);
+  assert.ok(output.indexOf("Ctrl+B · move left") < output.indexOf("• Move left once"));
   assert.doesNotMatch(output, /`/);
 });
 
@@ -43,17 +44,21 @@ test("condenses the lesson heading and guidance", () => {
   assert.match(output, /╭─/);
   assert.doesNotMatch(output, /INPUT|DETAILS/);
 
-  const headingLine = output.split("\n").find((line) => line.includes("01 · Line start"));
+  const outputLines = output.split("\n");
+  const headingLine = outputLines.find((line) => line.includes("01 · Line start"));
   const headingIndex = output.indexOf("01 · Line start");
   const goalIndex = output.indexOf("GOAL");
   const editorIndex = output.indexOf("╭─");
+  const focusIndex = output.indexOf("Ctrl+A · start of line");
   const guidanceIndex = output.indexOf("• Prefix");
   const scoreIndex = output.indexOf("KEYS 0");
 
+  assert.equal(outputLines[0], "  ");
   assert.equal(headingLine?.startsWith("  01 ·"), true);
   assert.ok(headingIndex < goalIndex);
   assert.ok(goalIndex < editorIndex);
-  assert.ok(editorIndex < guidanceIndex);
+  assert.ok(editorIndex < focusIndex);
+  assert.ok(focusIndex < guidanceIndex);
   assert.ok(guidanceIndex < scoreIndex);
 });
 

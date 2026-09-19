@@ -18,6 +18,7 @@ const PANEL_CONTENT_WIDTH = PANEL_WIDTH - 4;
 const INPUT_WIDTH = PANEL_CONTENT_WIDTH - 2;
 const INPUT_CONTENT_WIDTH = INPUT_WIDTH - 4;
 const ANSI_SEQUENCE = /\u001b\[[0-9;?]*[ -/]*[@-~]/g;
+const LEFT_PADDING = "  ";
 const themeManager = createThemeManager();
 const icons = createTerminalIcons();
 
@@ -32,7 +33,7 @@ export function renderGame(state: GameState): string {
 
   const challenge = currentChallenge(state);
   if (challenge === undefined) {
-    return `${CLEAR_SCREEN}${paint("error", "No challenge loaded.", "1")}\n`;
+    return renderScreen([paint("error", "No challenge loaded.", "1")]);
   }
 
   const drillName = formatDrillName(challenge.id);
@@ -64,7 +65,7 @@ export function renderGame(state: GameState): string {
     renderControls(),
   ];
 
-  return `${CLEAR_SCREEN}${lines.map((line) => `  ${line}`).join("\n")}\n`;
+  return renderScreen(lines);
 }
 
 function renderFinished(state: GameState): string {
@@ -90,7 +91,11 @@ function renderFinished(state: GameState): string {
     `${paint("accent", "R", "1")} play again   ${paint("muted", "CTRL+C", "2")} quit`,
   ];
 
-  return `${CLEAR_SCREEN}${lines.map((line) => `  ${line}`).join("\n")}\n`;
+  return renderScreen(lines);
+}
+
+function renderScreen(lines: string[]): string {
+  return `${CLEAR_SCREEN}${["", ...lines].map((line) => `${LEFT_PADDING}${line}`).join("\n")}\n`;
 }
 
 export function renderEditorLine(editor: EditorState): string {
@@ -255,23 +260,24 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
     ];
   }
 
-  const guidance = renderInstructionList(challenge.instructions);
+  const focus = `${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`;
+  const guidance = [focus, ...renderInstructionList(challenge.instructions)];
   if (expert) {
     guidance.unshift(paint("warning", "Guidance unlocked after a wasted key press.", "2"), "");
   }
-  guidance.push(
-    "",
-    `${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
-  );
   return guidance;
 }
 
 function renderInstructionList(instructions: string[]): string[] {
   return instructions.flatMap((instruction) =>
-    wrapText(instruction, PANEL_CONTENT_WIDTH - 4).map((line, index) =>
+    wrapText(stripTrailingPunctuation(instruction), PANEL_CONTENT_WIDTH - 4).map((line, index) =>
       `${index === 0 ? `${paint("accent", "•", "1")} ` : ""}${line}`,
     ),
   );
+}
+
+function stripTrailingPunctuation(value: string): string {
+  return value.replace(/[\p{P}]+$/gu, "");
 }
 
 function wrapText(value: string, width: number): string[] {
