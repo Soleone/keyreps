@@ -150,6 +150,7 @@ test("keeps the controls text-only", () => {
   const output = plainRender(startGame());
 
   assert.match(output, /ENTER submit   ESC reset   CTRL\+C quit/);
+  assert.match(output, /PGUP previous   PGDN next/);
   assert.doesNotMatch(output, /||/);
 });
 

@@ -64,6 +64,7 @@ export function applyKey(editor: EditorState, key: Key): AppliedKey {
     case "enter":
     case "escape":
     case "tab":
+    case "page":
     case "unknown":
       return { state: editor, action: null, handled: false };
   }

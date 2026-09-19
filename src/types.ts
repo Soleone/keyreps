@@ -1,4 +1,5 @@
 export type Direction = "left" | "right";
+export type PageDirection = "up" | "down";
 
 export type Key =
   | { type: "text"; value: string }
@@ -12,4 +13,5 @@ export type Key =
   | { type: "enter" }
   | { type: "escape" }
   | { type: "tab" }
+  | { type: "page"; direction: PageDirection }
   | { type: "unknown"; value: string };

@@ -7,6 +7,7 @@ import type { Key } from "../src/types.js";
 const control = (key: string): Key => ({ type: "control", key });
 const alt = (key: string): Key => ({ type: "alt", key });
 const text = (value: string): Key => ({ type: "text", value });
+const page = (direction: "up" | "down"): Key => ({ type: "page", direction });
 const enter: Key = { type: "enter" };
 
 function press(state: ReturnType<typeof startGame>, key: Key) {
@@ -161,4 +162,37 @@ test("escape resets a challenge without losing completed key presses", () => {
   assert.equal(state.totalKeys, 0);
   assert.equal(state.completed, 0);
   assert.equal(state.notification, null);
+});
+
+test("PageDown and PageUp navigate lessons without counting as key presses", () => {
+  let state = startGame();
+  state = press(state, control("a"));
+  state = press(state, page("down"));
+
+  const next = challenges[1];
+  assert.ok(next);
+  assert.equal(state.challengeIndex, 1);
+  assert.equal(state.editor.text, next.start);
+  assert.equal(state.editor.cursor, next.startCursor);
+  assert.equal(state.keyCount, 0);
+  assert.equal(state.mistakes, 0);
+
+  state = press(state, page("up"));
+  assert.equal(state.challengeIndex, 0);
+  assert.equal(state.editor.text, challenges[0]?.start);
+  assert.equal(state.editor.cursor, challenges[0]?.startCursor);
+  assert.equal(state.keyCount, 0);
+});
+
+test("lesson navigation stops at the first and last lessons", () => {
+  const first = startGame();
+  assert.equal(press(first, page("up")), first);
+
+  let last = first;
+  for (let index = 1; index < challenges.length; index += 1) {
+    last = press(last, page("down"));
+  }
+
+  assert.equal(last.challengeIndex, challenges.length - 1);
+  assert.equal(press(last, page("down")), last);
 });

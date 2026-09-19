@@ -61,3 +61,12 @@ void test("decodes home, end, delete, and enter", () => {
     { type: "enter" },
   ]);
 });
+
+test("decodes PageUp and PageDown", () => {
+  const decoder = new InputDecoder();
+
+  assert.deepEqual(decoder.feed("\u001b[5~\u001b[6~"), [
+    { type: "page", direction: "up" },
+    { type: "page", direction: "down" },
+  ]);
+});

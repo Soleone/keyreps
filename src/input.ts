@@ -182,6 +182,10 @@ function csiKey(sequence: string): Key | null {
       return { type: "end" };
     case `${ESC}[3~`:
       return { type: "delete" };
+    case `${ESC}[5~`:
+      return { type: "page", direction: "up" };
+    case `${ESC}[6~`:
+      return { type: "page", direction: "down" };
     case `${ESC}[1;5D`:
     case `${ESC}[5D`:
     case `${ESC}[1;3D`:

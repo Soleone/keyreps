@@ -76,6 +76,10 @@ export function handleKey(state: GameState, key: Key): KeyResult {
     return { state, quit: false };
   }
 
+  if (key.type === "page") {
+    return navigateLesson(state, key.direction);
+  }
+
   const challenge = currentChallenge(state);
   if (challenge === undefined) {
     return { state: { ...state, finished: true }, quit: false };
@@ -118,6 +122,26 @@ export function handleKey(state: GameState, key: Key): KeyResult {
       keyCount: state.keyCount + keyPresses,
       focusUsed,
     },
+    quit: false,
+  };
+}
+
+function navigateLesson(state: GameState, direction: "up" | "down"): KeyResult {
+  const offset = direction === "down" ? 1 : -1;
+  const challengeIndex = state.challengeIndex + offset;
+
+  if (challengeIndex < 0 || challengeIndex >= challenges.length) {
+    return { state, quit: false };
+  }
+
+  return {
+    state: makeChallengeState(
+      challengeIndex,
+      state.totalKeys,
+      state.completed,
+      state.lastKeyCount,
+      state.lastPerformance,
+    ),
     quit: false,
   };
 }
