@@ -1,4 +1,4 @@
-# typegod
+# Unix Keyboard Katas
 
 A tiny terminal game for learning Unix and Readline keyboard shortcuts.
 
@@ -33,7 +33,8 @@ When running under Omarchy, Typegod reads the active theme from
 `$XDG_STATE_HOME/omarchy/current/theme/colors.toml` and uses its accent, text,
 status, border, and panel colors. Outside Omarchy it falls back to basic ANSI
 colors. Set `TYPEGOD_THEME_FILE` to preview another Omarchy-compatible
-`colors.toml` file.
+`colors.toml` file. While the game is running, it checks for theme changes every
+750 ms and redraws after a successful reload.
 
 ## What it teaches
 

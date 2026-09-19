@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -10,12 +10,21 @@ export type ThemeColor =
   | "border"
   | "warning"
   | "success"
-  | "error";
+  | "error"
+  | "info"
+  | "secondary";
 
 export interface TerminalTheme {
   source: "omarchy" | "ansi";
   colors: Record<ThemeColor, string>;
   panelBackground: string;
+  headerText: string;
+  headerBackground: string;
+}
+
+export interface ThemeManager {
+  current(): TerminalTheme;
+  refresh(): boolean;
 }
 
 const fallbackTheme: TerminalTheme = {
@@ -29,18 +38,83 @@ const fallbackTheme: TerminalTheme = {
     warning: "33",
     success: "32",
     error: "31",
+    info: "36",
+    secondary: "35",
   },
   panelBackground: "100",
+  headerText: "97",
+  headerBackground: "44",
 };
+
+export function createThemeManager(): ThemeManager {
+  let activeTheme = fallbackTheme;
+  let activeSignature: string | undefined;
+
+  const refresh = (): boolean => {
+    const path = findOmarchyColorsFile();
+    if (path === undefined) {
+      // Keep the last good theme if Omarchy is midway through replacing it.
+      return false;
+    }
+
+    const signature = fileSignature(path);
+    if (signature === undefined || signature === activeSignature) {
+      return false;
+    }
+
+    const nextTheme = readThemeFile(path);
+    if (nextTheme === undefined) {
+      // A partially-written file is retried on the next poll.
+      return false;
+    }
+
+    activeTheme = nextTheme;
+    activeSignature = signature;
+    return true;
+  };
+
+  refresh();
+
+  return {
+    current: () => activeTheme,
+    refresh,
+  };
+}
 
 export function loadTerminalTheme(): TerminalTheme {
   const path = findOmarchyColorsFile();
-  if (path === undefined) {
-    return fallbackTheme;
-  }
+  return path === undefined ? fallbackTheme : readThemeFile(path) ?? fallbackTheme;
+}
 
+function findOmarchyColorsFile(): string | undefined {
+  const stateHome = process.env.XDG_STATE_HOME || join(homedir(), ".local", "state");
+  const candidates = [
+    process.env.TYPEGOD_THEME_FILE,
+    join(stateHome, "omarchy", "current", "theme", "colors.toml"),
+    join(homedir(), ".config", "omarchy", "current", "theme", "colors.toml"),
+  ];
+
+  return candidates.find((candidate): candidate is string =>
+    candidate !== undefined && candidate.length > 0 && existsSync(candidate),
+  );
+}
+
+function fileSignature(path: string): string | undefined {
+  try {
+    const stats = statSync(path);
+    return `${path}:${stats.dev}:${stats.ino}:${stats.mtimeMs}:${stats.size}`;
+  } catch {
+    return undefined;
+  }
+}
+
+function readThemeFile(path: string): TerminalTheme | undefined {
   try {
     const colors = parseColorsToml(readFileSync(path, "utf8"));
+    if (Object.keys(colors).length === 0) {
+      return undefined;
+    }
+
     return {
       source: "omarchy",
       colors: {
@@ -52,28 +126,22 @@ export function loadTerminalTheme(): TerminalTheme {
         warning: foreground(colors.yellow ?? colors.orange ?? colors.accent, fallbackTheme.colors.warning),
         success: foreground(colors.green ?? colors.accent, fallbackTheme.colors.success),
         error: foreground(colors.red ?? colors.accent, fallbackTheme.colors.error),
+        info: foreground(colors.cyan ?? colors.blue ?? colors.accent, fallbackTheme.colors.info),
+        secondary: foreground(colors.magenta ?? colors.blue ?? colors.accent, fallbackTheme.colors.secondary),
       },
       panelBackground: background(
         colors.lighter_background ?? colors.background,
         fallbackTheme.panelBackground,
       ),
+      headerText: foreground(colors.accent ?? colors.foreground, fallbackTheme.headerText),
+      headerBackground: background(
+        colors.selection ?? colors.lighter_background ?? colors.background,
+        fallbackTheme.headerBackground,
+      ),
     };
   } catch {
-    return fallbackTheme;
+    return undefined;
   }
-}
-
-function findOmarchyColorsFile(): string | undefined {
-  const stateHome = process.env.XDG_STATE_HOME ?? join(homedir(), ".local", "state");
-  const candidates = [
-    process.env.TYPEGOD_THEME_FILE,
-    join(stateHome, "omarchy", "current", "theme", "colors.toml"),
-    join(homedir(), ".config", "omarchy", "current", "theme", "colors.toml"),
-  ];
-
-  return candidates.find((candidate): candidate is string =>
-    candidate !== undefined && candidate.length > 0 && existsSync(candidate),
-  );
 }
 
 function parseColorsToml(value: string): Record<string, string> {

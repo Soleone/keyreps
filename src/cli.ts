@@ -3,8 +3,10 @@
 import process from "node:process";
 import { InputDecoder } from "./input.js";
 import { handleKey, startGame, type GameState } from "./game.js";
-import { renderGame } from "./render.js";
+import { refreshTheme, renderGame } from "./render.js";
 import type { Key } from "./types.js";
+
+const THEME_POLL_INTERVAL_MS = 750;
 
 function main(): void {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
@@ -17,6 +19,7 @@ function main(): void {
   let game: GameState = startGame();
   let cleanedUp = false;
   let pendingTimer: NodeJS.Timeout | undefined;
+  let themeTimer: NodeJS.Timeout | undefined;
 
   const cleanup = (): void => {
     if (cleanedUp) {
@@ -26,6 +29,10 @@ function main(): void {
     if (pendingTimer !== undefined) {
       clearTimeout(pendingTimer);
       pendingTimer = undefined;
+    }
+    if (themeTimer !== undefined) {
+      clearInterval(themeTimer);
+      themeTimer = undefined;
     }
     process.stdin.setRawMode(false);
     process.stdin.pause();
@@ -90,6 +97,13 @@ function main(): void {
     console.error(error);
     process.exitCode = 1;
   });
+
+  themeTimer = setInterval(() => {
+    if (refreshTheme()) {
+      draw();
+    }
+  }, THEME_POLL_INTERVAL_MS);
+  themeTimer.unref();
 
   process.stdout.write("\u001b[?25l");
   draw();

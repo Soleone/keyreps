@@ -13,6 +13,7 @@
   - intermediate stages should combine multiple commands
   - expert tier stages should hide the instructions upfront and just show if you wasted keystrokes
 - [ ] **make "target cursor" more muted, yellow or accent is overkill. also try to make more elegant in how it looks with nerdfont potentially**
+- [ ] **display exactly if you got the perfect score by using minimal keyboard strokes** — dont show abstract points, but amount of keyboard presses that led to victory
 
 ## Later
 

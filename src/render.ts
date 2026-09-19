@@ -1,7 +1,7 @@
 import { challenges } from "./challenges.js";
 import { currentChallenge, type GameState } from "./game.js";
 import type { EditorState } from "./editor.js";
-import { loadTerminalTheme, type ThemeColor } from "./theme.js";
+import { createThemeManager, type ThemeColor } from "./theme.js";
 
 const ESC = "\u001b[";
 const RESET = `${ESC}0m`;
@@ -9,7 +9,11 @@ const CLEAR_SCREEN = `${ESC}2J${ESC}H`;
 const PANEL_WIDTH = 76;
 const PANEL_CONTENT_WIDTH = PANEL_WIDTH - 4;
 const ANSI_SEQUENCE = /\u001b\[[0-9;?]*[ -/]*[@-~]/g;
-const theme = loadTerminalTheme();
+const themeManager = createThemeManager();
+
+export function refreshTheme(): boolean {
+  return themeManager.refresh();
+}
 
 export function renderGame(state: GameState, now = Date.now()): string {
   if (state.finished) {
@@ -29,21 +33,21 @@ export function renderGame(state: GameState, now = Date.now()): string {
       (line) => `  ${line}`,
     ),
     "",
-    paint("dim", "SHORTCUT", "2"),
+    paint("info", "SHORTCUT", "2"),
     `  ${paint("accent", challenge.focusLabel, "1")}`,
     "",
-    paint("dim", "TARGET  ·  GOAL MARKER", "2"),
+    paint("info", "TARGET  ·  GOAL MARKER", "2"),
     `  ${paint("dim", formatTarget(challenge.target), "2")}`,
     `  ${paint("warning", targetMarker(challenge.target, challenge.targetCursor), "2")}`,
     "",
-    paint("dim", "EDITOR", "2"),
+    paint("secondary", "EDITOR", "2"),
     `  ${paint("accent", "$", "1")} ${renderEditorLine(state.editor)}`,
   ];
 
   const guidanceText = state.message.length > 0 ? state.message : challenge.hint;
   const guidanceRole: ThemeColor = state.message.length > 0 ? "text" : "muted";
   const guidance = [
-    `  ${state.message.length > 0 ? paint("warning", "STATUS", "1") : paint("dim", "HINT", "2")}`,
+    `  ${state.message.length > 0 ? paint("warning", "STATUS", "1") : paint("info", "HINT", "2")}`,
     ...wrapText(guidanceText, PANEL_CONTENT_WIDTH - 4).map(
       (line) => `  ${paint(guidanceRole, line, state.message.length > 0 ? "1" : "2")}`,
     ),
@@ -77,7 +81,7 @@ function renderFinished(state: GameState, now: number): string {
   ];
 
   const lines = [
-    ...renderHeader(state, "TYPEGOD  /  COMPLETE"),
+    ...renderHeader(state, "UNIX KEYBOARD KATAS  /  COMPLETE"),
     "",
     ...panel("RUN COMPLETE", result),
     "",
@@ -98,7 +102,7 @@ export function renderEditorLine(editor: EditorState): string {
   return `${before}${paint("accent", current, "7;1")}${after}`;
 }
 
-function renderHeader(state: GameState, title = "TYPEGOD"): string[] {
+function renderHeader(state: GameState, title = "UNIX KEYBOARD KATAS"): string[] {
   const completed = Math.max(0, Math.min(state.completed, challenges.length));
   const progress = progressBar(completed, challenges.length, 14);
   const drillLabel = state.finished
@@ -107,10 +111,10 @@ function renderHeader(state: GameState, title = "TYPEGOD"): string[] {
 
   const percent = Math.round((completed / challenges.length) * 100);
   return [
-    alignColumns(`  ${paint("accent", title, "1")}`, paint("muted", drillLabel, "2")),
+    headerLine(alignColumns(`  ${title}`, `  ${drillLabel}`)),
     alignColumns(
-      `  ${paint("muted", "UNIX KEYBOARD DRILLS", "2")}`,
-      `${paint("accent", progress, "1")}  ${paint("muted", `${percent}%`, "2")}`,
+      `  ${paint("muted", "TYPEGOD  ·  TERMINAL PRACTICE", "2")}`,
+      `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("muted", `${percent}%`, "2")}`,
     ),
   ];
 }
@@ -129,7 +133,7 @@ function renderStatsStrip(state: GameState, elapsed: string): string {
 }
 
 function renderControls(): string {
-  return `${paint("muted", "ENTER", "2")} submit   ${paint("muted", "ESC", "2")} reset   ${paint("muted", "CTRL+C", "2")} quit`;
+  return `${paint("success", "ENTER", "1")} submit   ${paint("warning", "ESC", "1")} reset   ${paint("error", "CTRL+C", "1")} quit`;
 }
 
 function panel(title: string, contents: string[]): string[] {
@@ -147,8 +151,18 @@ function panelRow(content: string): string {
 }
 
 function backgroundLine(content: string): string {
+  const theme = themeManager.current();
   const padding = Math.max(0, PANEL_WIDTH - visibleLength(content));
   return paintRaw(`${theme.colors.text};${theme.panelBackground}`, `${content}${" ".repeat(padding)}`);
+}
+
+function headerLine(content: string): string {
+  const theme = themeManager.current();
+  const padding = Math.max(0, PANEL_WIDTH - visibleLength(content));
+  return paintRaw(
+    `1;${theme.headerText};${theme.headerBackground}`,
+    `${content}${" ".repeat(padding)}`,
+  );
 }
 
 function border(value: string): string {
@@ -164,13 +178,16 @@ function targetMarker(target: string, cursor: number): string {
   return `${" ".repeat(offset)}^ target cursor`;
 }
 
-function progressBar(completed: number, total: number, width: number): string {
+function progressBar(completed: number, total: number, width: number): { filled: string; empty: string } {
   if (total <= 0) {
-    return "░".repeat(width);
+    return { filled: "", empty: "░".repeat(width) };
   }
 
-  const filled = Math.round((completed / total) * width);
-  return `${"█".repeat(filled)}${"░".repeat(Math.max(0, width - filled))}`;
+  const filledCount = Math.round((completed / total) * width);
+  return {
+    filled: "█".repeat(filledCount),
+    empty: "░".repeat(Math.max(0, width - filledCount)),
+  };
 }
 
 function alignColumns(left: string, right: string): string {
@@ -213,6 +230,7 @@ function visibleLength(value: string): number {
 }
 
 function paint(role: ThemeColor, value: string, attributes = ""): string {
+  const theme = themeManager.current();
   const code = attributes.length > 0 ? `${attributes};${theme.colors[role]}` : theme.colors[role];
   return paintRaw(code, value);
 }
