@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 export type ThemeColor =
   | "accent"
+  | "blue"
   | "text"
   | "muted"
   | "dim"
@@ -31,6 +32,7 @@ const fallbackTheme: TerminalTheme = {
   source: "ansi",
   colors: {
     accent: "36",
+    blue: "34",
     text: "37",
     muted: "37",
     dim: "37",
@@ -119,6 +121,7 @@ function readThemeFile(path: string): TerminalTheme | undefined {
       source: "omarchy",
       colors: {
         accent: foreground(colors.accent ?? colors.yellow ?? colors.cyan, fallbackTheme.colors.accent),
+        blue: foreground(colors.blue, fallbackTheme.colors.blue),
         text: foreground(colors.foreground ?? colors.bright_foreground, fallbackTheme.colors.text),
         muted: foreground(colors.muted ?? colors.dark_foreground ?? colors.color8, fallbackTheme.colors.muted),
         dim: foreground(colors.dark_foreground ?? colors.muted ?? colors.color8, fallbackTheme.colors.dim),
