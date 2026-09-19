@@ -32,7 +32,7 @@ test("renders each current stage instruction as a bullet", () => {
 
   assert.match(output, /• Move left once/);
   assert.match(output, /• Insert t/);
-  assert.ok(output.indexOf("Ctrl+B · move left") < output.indexOf("• Move left once"));
+  assert.ok(output.indexOf("Ctrl+B move left") < output.indexOf("• Move left once"));
   assert.doesNotMatch(output, /`/);
 });
 
@@ -49,7 +49,7 @@ test("condenses the lesson heading and guidance", () => {
   const headingIndex = output.indexOf("01 · Line start");
   const goalIndex = output.indexOf("GOAL");
   const editorIndex = output.indexOf("╭─");
-  const focusIndex = output.indexOf("Ctrl+A · start of line");
+  const focusIndex = output.indexOf("Ctrl+A start of line");
   const guidanceIndex = output.indexOf("• Prefix");
   const scoreIndex = output.indexOf("KEYS 0");
 
@@ -75,7 +75,7 @@ test("aligns the input and goal command", () => {
   assert.ok(inputLine >= 0);
   assert.ok(inputValueLine >= 0);
   assert.match(lines[inputValueLine] ?? "", /\$ sudo systemctl restart api/);
-  assert.match(lines.join("\n"), /Ctrl\+A · start of line/);
+  assert.match(lines.join("\n"), /Ctrl\+A start of line/);
   assert.doesNotMatch(lines.join("\n"), /TIP|Ctrl\+A jumps/);
   assert.ok(targetLine !== undefined);
   assert.ok(markerLine !== undefined);

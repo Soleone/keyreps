@@ -260,7 +260,7 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
     ];
   }
 
-  const focus = `${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`;
+  const focus = `${paint("accent", challenge.focusLabel, "1")} ${paint("muted", challenge.focusDescription, "2")}`;
   const guidance = [focus, ...renderInstructionList(challenge.instructions)];
   if (expert) {
     guidance.unshift(paint("warning", "Guidance unlocked after a wasted key press.", "2"), "");
