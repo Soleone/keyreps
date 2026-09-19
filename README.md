@@ -26,7 +26,7 @@ typegod
 ```
 
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
-reset a drill, `Enter` to submit it, and `PageUp` / `PageDown` to move between
+reset a drill, `Enter` to submit it, and `Ctrl+Up` / `Ctrl+Down` to move between
 lessons.
 
 When a Nerd Font is installed, the interactive UI adds a few small icons to its

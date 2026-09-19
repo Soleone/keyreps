@@ -149,7 +149,7 @@ function formatRemainingKeys(value: number): string {
 }
 
 function renderControls(): string {
-  return `${paint("success", "ENTER", "1")} ${paint("text", "submit", "2")}   ${paint("warning", "ESC", "1")} ${paint("text", "reset", "2")}   ${paint("error", "CTRL+C", "1")} ${paint("text", "quit", "2")}   ${paint("accent", "PGUP", "1")} ${paint("text", "previous")}   ${paint("accent", "PGDN", "1")} ${paint("text", "next")}`;
+  return `${paint("success", "ENTER", "1")} ${paint("text", "submit", "2")}   ${paint("warning", "ESC", "1")} ${paint("text", "reset", "2")}   ${paint("error", "CTRL+C", "1")} ${paint("text", "quit", "2")}   ${paint("accent", "CTRL+UP", "1")} ${paint("text", "previous")}   ${paint("accent", "CTRL+DOWN", "1")} ${paint("text", "next")}`;
 }
 
 function renderNotification(notification: LessonNotification): string {

@@ -164,7 +164,7 @@ test("escape resets a challenge without losing completed key presses", () => {
   assert.equal(state.notification, null);
 });
 
-test("PageDown and PageUp navigate lessons without counting as key presses", () => {
+test("Ctrl+Down and Ctrl+Up navigate lessons without counting as key presses", () => {
   let state = startGame();
   state = press(state, control("a"));
   state = press(state, page("down"));
