@@ -164,10 +164,10 @@ test("escape resets a challenge without losing completed key presses", () => {
   assert.equal(state.notification, null);
 });
 
-test("Ctrl+Down and Ctrl+Up navigate lessons without counting as key presses", () => {
+test("Ctrl+Up and Ctrl+Down navigate lessons without counting as key presses", () => {
   let state = startGame();
   state = press(state, control("a"));
-  state = press(state, page("down"));
+  state = press(state, page("up"));
 
   const next = challenges[1];
   assert.ok(next);
@@ -177,7 +177,7 @@ test("Ctrl+Down and Ctrl+Up navigate lessons without counting as key presses", (
   assert.equal(state.keyCount, 0);
   assert.equal(state.mistakes, 0);
 
-  state = press(state, page("up"));
+  state = press(state, page("down"));
   assert.equal(state.challengeIndex, 0);
   assert.equal(state.editor.text, challenges[0]?.start);
   assert.equal(state.editor.cursor, challenges[0]?.startCursor);
@@ -186,13 +186,13 @@ test("Ctrl+Down and Ctrl+Up navigate lessons without counting as key presses", (
 
 test("lesson navigation stops at the first and last lessons", () => {
   const first = startGame();
-  assert.equal(press(first, page("up")), first);
+  assert.equal(press(first, page("down")), first);
 
   let last = first;
   for (let index = 1; index < challenges.length; index += 1) {
-    last = press(last, page("down"));
+    last = press(last, page("up"));
   }
 
   assert.equal(last.challengeIndex, challenges.length - 1);
-  assert.equal(press(last, page("down")), last);
+  assert.equal(press(last, page("up")), last);
 });

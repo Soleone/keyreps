@@ -26,8 +26,8 @@ typegod
 ```
 
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
-reset a drill, `Enter` to submit it, and `Ctrl+Up` / `Ctrl+Down` to move between
-lessons.
+reset a drill, `Enter` to submit it, `Ctrl+Up` for the next lesson, and
+`Ctrl+Down` for the previous lesson.
 
 When a Nerd Font is installed, the interactive UI adds a few small icons to its
 section landmarks. Detection uses `fc-list`; set `TYPEGOD_ICONS=text`

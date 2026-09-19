@@ -127,7 +127,7 @@ export function handleKey(state: GameState, key: Key): KeyResult {
 }
 
 function navigateLesson(state: GameState, direction: "up" | "down"): KeyResult {
-  const offset = direction === "down" ? 1 : -1;
+  const offset = direction === "up" ? 1 : -1;
   const challengeIndex = state.challengeIndex + offset;
 
   if (challengeIndex < 0 || challengeIndex >= challenges.length) {
