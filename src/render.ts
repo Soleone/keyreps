@@ -37,22 +37,26 @@ export function renderGame(state: GameState): string {
 
   const drillName = formatDrillName(challenge.id);
   const drillLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${drillName}`;
-  const challengeHeading = alignColumns(
-    `  ${paint("accent", drillLabel, "1")}`,
-    `  ${renderProgressLabel(state)}`,
-  );
-  const challengeContent = [
-    challengeHeading,
-    "",
+  const challengeHeading = [
     `  ${paint("text", challenge.title, "1")}`,
-    ...renderChallengeGuidance(state, challenge),
+    alignColumns(
+      `  ${paint("accent", drillLabel, "1")}`,
+      `  ${renderProgressLabel(state)}`,
+    ),
+  ];
+  const challengeContent = [
+    ...challengeHeading,
     "",
-    ...renderEditorBlock(state.editor),
-    "",
-    paint("info", "GOAL", "2"),
+    paint("info", iconLabel(icons.target, "GOAL"), "2"),
     `  ${paint("dim", `$ ${formatTarget(challenge.target)}`, "2")}`,
     `  ${targetMarker(challenge.target, challenge.targetCursor)}`,
+    "",
+    paint("info", iconLabel(icons.terminal, "INPUT"), "2"),
+    ...renderEditorBlock(state.editor),
     ...(state.message.length > 0 ? ["", renderStatus(state.message, state.lastPerformance)] : []),
+    "",
+    paint("info", "DETAILS", "2"),
+    ...renderChallengeGuidance(state, challenge),
   ];
 
   const lines = [
@@ -263,6 +267,7 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
   guidance.push(
     "",
     `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
+    ...renderHint(challenge.hint),
   );
   return guidance;
 }
@@ -272,6 +277,12 @@ function renderInstructionList(instructions: string[]): string[] {
     wrapText(instruction, PANEL_CONTENT_WIDTH - 4).map((line, index) =>
       `${index === 0 ? `  ${paint("accent", "•", "1")} ` : "    "}${line}`,
     ),
+  );
+}
+
+function renderHint(hint: string): string[] {
+  return wrapText(hint, PANEL_CONTENT_WIDTH - 8).map((line, index) =>
+    `${index === 0 ? `  ${paint("muted", iconLabel(icons.hint, "TIP"), "2")} ` : "      "}${paint("dim", line, "2")}`,
   );
 }
 

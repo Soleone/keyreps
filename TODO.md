@@ -5,13 +5,12 @@
 
 ## Next
 
-- [ ] **reorganize screen sections** — We should probably lead with the title of the lesson and then the goal of the command that we want to have at the end and then the status of the input where we are at now and then below are the actual details and further tips and below that the score.
-
 ## Later
 
 
 ## Archive
 
+- [x] **reorganize screen sections** — Lead with the lesson title, then the goal, current input and status, details and tips, and keyboard-press stats.
 - [x] **build more combination stages at the end**
   - intermediate stages combine multiple commands
   - expert tier stages hide instructions until a wasted key press reveals them

@@ -35,15 +35,25 @@ test("renders each current stage instruction as a bullet", () => {
   assert.doesNotMatch(output, /`/);
 });
 
-test("makes the editor a focused input before the goal", () => {
+test("orders the lesson title, goal, input, details, and score", () => {
   const output = plainRender(startGame());
 
   assert.match(output, /Typegod · UNIX KEYBOARD KATAS/);
   assert.match(output, /01 · Line start/);
-  assert.doesNotMatch(output, /╭─ 01 · Line start/);
   assert.match(output, /╭─/);
-  assert.doesNotMatch(output, /INPUT/);
-  assert.ok(output.indexOf("INPUT") < output.indexOf("GOAL"));
+  assert.match(output, /INPUT/);
+
+  const titleIndex = output.indexOf("Get to the start");
+  const goalIndex = output.indexOf("GOAL");
+  const inputIndex = output.indexOf("INPUT");
+  const detailsIndex = output.indexOf("DETAILS");
+  const scoreIndex = output.indexOf("KEYS 0");
+
+  assert.ok(titleIndex >= 0);
+  assert.ok(titleIndex < goalIndex);
+  assert.ok(goalIndex < inputIndex);
+  assert.ok(inputIndex < detailsIndex);
+  assert.ok(detailsIndex < scoreIndex);
 });
 
 test("aligns the input and goal command", () => {
@@ -59,7 +69,7 @@ test("aligns the input and goal command", () => {
   assert.ok(inputLine >= 0);
   assert.ok(inputValueLine >= 0);
   assert.match(lines[inputValueLine] ?? "", /\$ sudo systemctl restart api/);
-  assert.doesNotMatch(lines.join("\n"), /HINT|Ctrl\+A jumps/);
+  assert.match(lines.join("\n"), /TIP Ctrl\+A jumps/);
   assert.ok(targetLine !== undefined);
   assert.ok(markerLine !== undefined);
   assert.equal(lines[inputValueLine]?.indexOf("sudo"), targetLine?.indexOf("sudo"));
@@ -85,14 +95,19 @@ test("aligns every goal cursor with its target insertion point", () => {
   }
 });
 
-test("puts status below the goal as one line", () => {
+test("puts status below the current input as one line", () => {
   const state = press(startGame(), control("a"));
   const lines = plainRender(state).split("\n");
   const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
+  const inputIndex = lines.findIndex((line) => line.includes("INPUT"));
+  const detailsIndex = lines.findIndex((line) => line.includes("DETAILS"));
   const statusIndex = lines.findIndex((line) => line.includes("STATUS"));
 
-  assert.equal(statusIndex, goalIndex + 4);
+  assert.ok(goalIndex < inputIndex);
+  assert.ok(inputIndex < statusIndex);
+  assert.ok(statusIndex < detailsIndex);
   assert.equal(lines[statusIndex - 1]?.trim(), "");
+  assert.equal(lines[statusIndex + 1]?.trim(), "");
   assert.doesNotMatch(lines[statusIndex] ?? "", /\n/);
 });
 
