@@ -47,7 +47,7 @@ export function renderGame(state: GameState): string {
   const challengeContent = [
     challengeHeading,
     "",
-    paint("info", "GOAL", "2"),
+    paint("accent", "GOAL", "1"),
     `${GOAL_INDENT}${paint("dim", "$", "2")} ${paint("text", challenge.target, "2")}`,
     `${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
