@@ -38,7 +38,7 @@ test("renders each current stage instruction as a bullet", () => {
 test("condenses the lesson heading and guidance", () => {
   const output = plainRender(startGame());
 
-  assert.match(output, /Typegod · UNIX KEYBOARD KATAS/);
+  assert.match(output, /Typegod · Learn to control the unix keyboard\s+01 \/ 38/);
   assert.match(output, /01 · Line start · Get to the start/);
   assert.match(output, /╭─/);
   assert.doesNotMatch(output, /INPUT|DETAILS/);
@@ -50,7 +50,7 @@ test("condenses the lesson heading and guidance", () => {
   const guidanceIndex = output.indexOf("• Prefix");
   const scoreIndex = output.indexOf("KEYS 0");
 
-  assert.equal(headingLine?.startsWith("01 ·"), true);
+  assert.equal(headingLine?.startsWith("  01 ·"), true);
   assert.ok(headingIndex < goalIndex);
   assert.ok(goalIndex < editorIndex);
   assert.ok(editorIndex < guidanceIndex);
@@ -133,7 +133,7 @@ test("shows keyboard presses instead of an abstract score", () => {
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });
 
-test("keeps the stats highlight out of the leading indentation", () => {
+test("keeps the stats highlight at the common left padding", () => {
   const line = renderGame(startGame()).split("\n").find((value) => value.includes("KEYS 0"));
   const escape = String.fromCharCode(27);
 

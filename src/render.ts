@@ -45,8 +45,8 @@ export function renderGame(state: GameState): string {
     challengeHeading,
     "",
     paint("info", "GOAL", "2"),
-    `  ${paint("dim", `$ ${formatTarget(challenge.target)}`, "2")}`,
-    `  ${targetMarker(challenge.target, challenge.targetCursor)}`,
+    `${paint("dim", "$", "2")} ${paint("text", formatTarget(challenge.target), "2")}`,
+    `${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
     ...renderEditorBlock(state.editor),
     ...(state.message.length > 0 ? ["", renderStatus(state.message, state.lastPerformance)] : []),
@@ -64,24 +64,24 @@ export function renderGame(state: GameState): string {
     renderControls(),
   ];
 
-  return `${CLEAR_SCREEN}${lines.join("\n")}\n`;
+  return `${CLEAR_SCREEN}${lines.map((line) => `  ${line}`).join("\n")}\n`;
 }
 
 function renderFinished(state: GameState): string {
   const idealTotal = challenges.reduce((total, challenge) => total + challenge.idealKeys, 0);
   const totalPerformance = keyPerformance(state.totalKeys, idealTotal);
   const result = [
-    `  ${paint("success", "All keyboard drills cleared.", "1")}`,
+    `${paint("success", "All keyboard drills cleared.", "1")}`,
     "",
-    `  ${paint("muted", "DRILLS COMPLETED", "2")}  ${paint("text", `${state.completed} / ${challenges.length}`, "1")}`,
-    `  ${paint("muted", "KEY PRESSES", "2")}       ${paint(performanceColor(totalPerformance), `${state.totalKeys} · ${performanceLabel(totalPerformance)}`, "1")}`,
+    `${paint("muted", "DRILLS COMPLETED", "2")}  ${paint("text", `${state.completed} / ${challenges.length}`, "1")}`,
+    `${paint("muted", "KEY PRESSES", "2")}       ${paint(performanceColor(totalPerformance), `${state.totalKeys} · ${performanceLabel(totalPerformance)}`, "1")}`,
     state.lastKeyCount === null
       ? ""
-      : `  ${paint("muted", "LAST DRILL", "2")}          ${paint(performanceColor(state.lastPerformance), `${state.lastKeyCount} ${keyPressLabel(state.lastKeyCount)} · ${performanceLabel(state.lastPerformance)}`, "1")}`,
+      : `${paint("muted", "LAST DRILL", "2")}          ${paint(performanceColor(state.lastPerformance), `${state.lastKeyCount} ${keyPressLabel(state.lastKeyCount)} · ${performanceLabel(state.lastPerformance)}`, "1")}`,
   ];
 
   const lines = [
-    ...renderHeader(state, "UNIX KEYBOARD KATAS  /  COMPLETE", true),
+    ...renderHeader(state, "Learn to control the unix keyboard  /  COMPLETE", true),
     "",
     ...panel(iconLabel(icons.complete, "RUN COMPLETE"), result),
     "",
@@ -90,7 +90,7 @@ function renderFinished(state: GameState): string {
     `${paint("accent", "R", "1")} play again   ${paint("muted", "CTRL+C", "2")} quit`,
   ];
 
-  return `${CLEAR_SCREEN}${lines.join("\n")}\n`;
+  return `${CLEAR_SCREEN}${lines.map((line) => `  ${line}`).join("\n")}\n`;
 }
 
 export function renderEditorLine(editor: EditorState): string {
@@ -102,11 +102,11 @@ export function renderEditorLine(editor: EditorState): string {
   return `${before}${paint("accent", current, "7;1")}${after}`;
 }
 
-function renderHeader(state: GameState, title = "UNIX KEYBOARD KATAS", includeProgress = false): string[] {
+function renderHeader(state: GameState, title = "Learn to control the unix keyboard", includeProgress = false): string[] {
   const drillLabel = state.finished
     ? "ALL DRILLS CLEARED"
-    : `DRILL ${String(state.challengeIndex + 1).padStart(2, "0")} / ${String(challenges.length).padStart(2, "0")}`;
-  const lines = [headerLine(alignColumns(`  Typegod · ${title}`, `  ${drillLabel}`))];
+    : `${String(state.challengeIndex + 1).padStart(2, "0")} / ${String(challenges.length).padStart(2, "0")}`;
+  const lines = [headerLine(alignColumns(`Typegod · ${title}`, drillLabel))];
 
   if (includeProgress) {
     lines.push(alignColumns("", `  ${renderProgressLabel(state)}`));
@@ -129,7 +129,7 @@ function renderStatsStrip(state: GameState): string {
     `TOTAL ${state.totalKeys}`,
   ].join(" · ");
 
-  return `  ${backgroundLine(content)}`;
+  return backgroundLine(content);
 }
 
 function renderKeyStat(state: GameState): string {
@@ -142,7 +142,7 @@ function renderKeyStat(state: GameState): string {
 }
 
 function renderControls(): string {
-  return `${paint("success", "ENTER", "1")} submit   ${paint("warning", "ESC", "1")} reset   ${paint("error", "CTRL+C", "1")} quit`;
+  return `${paint("success", "ENTER", "1")} ${paint("muted", "submit", "2")}   ${paint("warning", "ESC", "1")} ${paint("muted", "reset", "2")}   ${paint("error", "CTRL+C", "1")} ${paint("muted", "quit", "2")}`;
 }
 
 function panel(title: string, contents: string[]): string[] {
@@ -206,7 +206,7 @@ function inputBorder(value: string, attributes = "2"): string {
 function renderStatus(message: string, performance: KeyPerformance | null): string {
   const prefix = "STATUS · ";
   const available = PANEL_CONTENT_WIDTH - 2 - prefix.length;
-  return `  ${paint("warning", "STATUS", "1")} ${paint("dim", "·", "2")} ${paint(performanceColor(performance), truncateSingleLine(message, available), "1")}`;
+  return `${paint("warning", "STATUS", "1")} ${paint("dim", "·", "2")} ${paint(performanceColor(performance), truncateSingleLine(message, available), "1")}`;
 }
 
 function truncateSingleLine(value: string, width: number): string {
@@ -250,18 +250,18 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
 
   if (expert && !revealed) {
     return [
-      `  ${paint("muted", "EXPERT · instructions hidden", "1")}`,
-      `  ${paint("dim", "Solve from memory. Guidance appears after a wasted key press.", "2")}`,
+      paint("muted", "EXPERT · instructions hidden", "1"),
+      paint("dim", "Solve from memory. Guidance appears after a wasted key press.", "2"),
     ];
   }
 
   const guidance = renderInstructionList(challenge.instructions);
   if (expert) {
-    guidance.unshift(`  ${paint("warning", "Guidance unlocked after a wasted key press.", "2")}`, "");
+    guidance.unshift(paint("warning", "Guidance unlocked after a wasted key press.", "2"), "");
   }
   guidance.push(
     "",
-    `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
+    `${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
   );
   return guidance;
 }
@@ -269,7 +269,7 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
 function renderInstructionList(instructions: string[]): string[] {
   return instructions.flatMap((instruction) =>
     wrapText(instruction, PANEL_CONTENT_WIDTH - 4).map((line, index) =>
-      `${index === 0 ? `  ${paint("accent", "•", "1")} ` : "    "}${line}`,
+      `${index === 0 ? `${paint("accent", "•", "1")} ` : ""}${line}`,
     ),
   );
 }
