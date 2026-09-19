@@ -63,8 +63,26 @@ test("aligns the input and goal command", () => {
   assert.ok(targetLine !== undefined);
   assert.ok(markerLine !== undefined);
   assert.equal(lines[inputValueLine]?.indexOf("sudo"), targetLine?.indexOf("sudo"));
-  assert.equal(markerLine?.indexOf("^"), targetLine?.indexOf("sudo") + 4);
+  assert.equal(markerLine?.indexOf("cursor") - 2, targetLine?.indexOf("sudo") + "sudo ".length);
   assert.doesNotMatch(markerLine ?? "", /target cursor/);
+});
+
+test("aligns every goal cursor with its target insertion point", () => {
+  for (const [challengeIndex, challenge] of challenges.entries()) {
+    const state = {
+      ...startGame(),
+      challengeIndex,
+      editor: createEditor(challenge.target, challenge.targetCursor),
+    };
+    const lines = plainRender(state).split("\n");
+    const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
+    const targetLine = lines[goalIndex + 1] ?? "";
+    const markerLine = lines[goalIndex + 2] ?? "";
+    const markerPosition = markerLine.indexOf("cursor") - 2;
+    const targetPosition = targetLine.indexOf("$ ") + 2 + challenge.targetCursor;
+
+    assert.equal(markerPosition, targetPosition, challenge.id);
+  }
 });
 
 test("puts status below the goal as one line", () => {
@@ -89,6 +107,13 @@ test("shows keyboard presses instead of an abstract score", () => {
   assert.match(output, /Solved\. 6 key presses\. Perfect\./);
   assert.match(output, /KEYS 0 · MISSES 0 · TOTAL 6/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
+});
+
+test("keeps the stats highlight out of the leading indentation", () => {
+  const line = renderGame(startGame()).split("\n").find((value) => value.includes("KEYS 0"));
+  const escape = String.fromCharCode(27);
+
+  assert.equal(line?.startsWith(`  ${escape}[`), true);
 });
 
 test("shows the final keyboard press total", () => {

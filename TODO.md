@@ -5,6 +5,8 @@
 
 ## Next
 
+- [ ] **reorganize screen sections** — We should probably lead with the title of the lesson and then the goal of the command that we want to have at the end and then the status of the input where we are at now and then below are the actual details and further tips and below that the score.
+
 ## Later
 
 

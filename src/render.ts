@@ -130,7 +130,7 @@ function renderStatsStrip(state: GameState): string {
     `TOTAL ${state.totalKeys}`,
   ].join(" · ");
 
-  return backgroundLine(`  ${content}`);
+  return `  ${backgroundLine(content)}`;
 }
 
 function renderKeyStat(state: GameState): string {
@@ -222,11 +222,10 @@ function truncateSingleLine(value: string, width: number): string {
 function targetMarker(target: string, cursor: number): string {
   const targetLength = Array.from(target).length;
   const offset = Math.max(0, Math.min(cursor, targetLength));
-  const markerOffset = offset > 0 && offset < targetLength ? offset - 1 : offset;
   const marker = icons.goal.length > 0
     ? iconLabel(icons.goal, "cursor")
     : "^ cursor";
-  return `  ${" ".repeat(markerOffset)}${paint("dim", marker, "2")}`;
+  return `  ${" ".repeat(offset)}${paint("dim", marker, "2")}`;
 }
 
 function progressBar(completed: number, total: number, width: number): { filled: string; empty: string } {
