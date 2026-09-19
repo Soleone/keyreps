@@ -2,6 +2,7 @@ import { challenges } from "./challenges.js";
 import { currentChallenge, type GameState } from "./game.js";
 import type { EditorState } from "./editor.js";
 import { createThemeManager, type ThemeColor } from "./theme.js";
+import { createTerminalIcons, iconLabel } from "./icons.js";
 
 const ESC = "\u001b[";
 const RESET = `${ESC}0m`;
@@ -10,6 +11,7 @@ const PANEL_WIDTH = 76;
 const PANEL_CONTENT_WIDTH = PANEL_WIDTH - 4;
 const ANSI_SEQUENCE = /\u001b\[[0-9;?]*[ -/]*[@-~]/g;
 const themeManager = createThemeManager();
+const icons = createTerminalIcons();
 
 export function refreshTheme(): boolean {
   return themeManager.refresh();
@@ -31,14 +33,14 @@ export function renderGame(state: GameState, now = Date.now()): string {
     `  ${paint("text", challenge.title, "1")}`,
     ...renderInstructionList(challenge.instructions),
     "",
-    paint("info", "SHORTCUT", "2"),
+    paint("info", iconLabel(icons.key, "SHORTCUT"), "2"),
     `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
     "",
-    paint("info", "TARGET  ·  GOAL MARKER", "2"),
+    paint("info", iconLabel(icons.target, "TARGET  ·  GOAL MARKER"), "2"),
     `  ${paint("dim", formatTarget(challenge.target), "2")}`,
-    `  ${paint("warning", targetMarker(challenge.target, challenge.targetCursor), "2")}`,
+    `  ${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
-    paint("secondary", "EDITOR", "2"),
+    paint("secondary", iconLabel(icons.terminal, "EDITOR"), "2"),
     `  ${paint("accent", "$", "1")} ${renderEditorLine(state.editor)}`,
   ];
 
@@ -58,7 +60,7 @@ export function renderGame(state: GameState, now = Date.now()): string {
     "",
     renderStatsStrip(state, elapsed),
     "",
-    ...panel("GUIDANCE", guidance),
+    ...panel(iconLabel(icons.hint, "GUIDANCE"), guidance),
     "",
     renderControls(),
   ];
@@ -69,7 +71,7 @@ export function renderGame(state: GameState, now = Date.now()): string {
 function renderFinished(state: GameState, now: number): string {
   const elapsed = formatSeconds(Math.max(0, (now - state.startedAt) / 1000));
   const result = [
-    `  ${paint("success", "All keyboard drills cleared.", "1")}`,
+    `  ${paint("success", iconLabel(icons.complete, "All keyboard drills cleared."), "1")}`,
     "",
     `  ${paint("muted", "DRILLS COMPLETED", "2")}  ${paint("text", `${state.completed} / ${challenges.length}`, "1")}`,
     `  ${paint("muted", "FINAL SCORE", "2")}       ${paint("warning", String(state.totalScore), "1")}`,
@@ -81,7 +83,7 @@ function renderFinished(state: GameState, now: number): string {
   const lines = [
     ...renderHeader(state, "UNIX KEYBOARD KATAS  /  COMPLETE"),
     "",
-    ...panel("RUN COMPLETE", result),
+    ...panel(iconLabel(icons.complete, "RUN COMPLETE"), result),
     "",
     renderStatsStrip(state, elapsed),
     "",
@@ -109,7 +111,7 @@ function renderHeader(state: GameState, title = "UNIX KEYBOARD KATAS"): string[]
 
   const percent = Math.round((completed / challenges.length) * 100);
   return [
-    headerLine(alignColumns(`  ${title}`, `  ${drillLabel}`)),
+    headerLine(alignColumns(`  ${iconLabel(icons.keyboard, title)}`, `  ${drillLabel}`)),
     alignColumns(
       `  ${paint("muted", "TYPEGOD  ·  TERMINAL PRACTICE", "2")}`,
       `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("muted", `${percent}%`, "2")}`,
@@ -131,7 +133,7 @@ function renderStatsStrip(state: GameState, elapsed: string): string {
 }
 
 function renderControls(): string {
-  return `${paint("success", "ENTER", "1")} submit   ${paint("warning", "ESC", "1")} reset   ${paint("error", "CTRL+C", "1")} quit`;
+  return `${paint("success", iconLabel(icons.submit, "ENTER"), "1")} submit   ${paint("warning", iconLabel(icons.reset, "ESC"), "1")} reset   ${paint("error", iconLabel(icons.quit, "CTRL+C"), "1")} quit`;
 }
 
 function panel(title: string, contents: string[]): string[] {
@@ -173,7 +175,10 @@ function formatTarget(target: string): string {
 
 function targetMarker(target: string, cursor: number): string {
   const offset = Math.min(cursor, Array.from(target).length);
-  return `${" ".repeat(offset)}^ target cursor`;
+  const marker = icons.goal.length > 0
+    ? iconLabel(icons.goal, "target cursor")
+    : "^ target cursor";
+  return `${" ".repeat(offset)}${paint("dim", marker, "2")}`;
 }
 
 function progressBar(completed: number, total: number, width: number): { filled: string; empty: string } {

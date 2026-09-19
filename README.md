@@ -27,6 +27,10 @@ typegod
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
 reset a drill, and `Enter` to submit it.
 
+When a Nerd Font is installed, the interactive UI adds a few small icons to its
+section landmarks and controls. Detection uses `fc-list`; set `TYPEGOD_ICONS=text`
+to keep the text-only layout or `TYPEGOD_ICONS=nerdfont` to force the icons.
+
 ## Theming
 
 When running under Omarchy, Typegod reads the active theme from
