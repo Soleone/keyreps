@@ -27,6 +27,14 @@ typegod
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
 reset a drill, and `Enter` to submit it.
 
+## Theming
+
+When running under Omarchy, Typegod reads the active theme from
+`$XDG_STATE_HOME/omarchy/current/theme/colors.toml` and uses its accent, text,
+status, border, and panel colors. Outside Omarchy it falls back to basic ANSI
+colors. Set `TYPEGOD_THEME_FILE` to preview another Omarchy-compatible
+`colors.toml` file.
+
 ## What it teaches
 
 - `Ctrl+A` and `Ctrl+E`: start and end of line
