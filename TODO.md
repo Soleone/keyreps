@@ -6,9 +6,6 @@
 ## Next
 
 - [ ] **remove · MISSES 0 · TOTAL 27** — dont think we need that concept. we mainyl care about completing currnet lesson effectively no matter how many retrries. and total progress of all lessons.
-- [ ] **reverse keys count display**
-  - instead of counting up we should count down, potentially into negative (keep one leading space that can be replaced with - to avoid shifting the content.
-  - so for each lesson it starts by showing the amount of keys optimally needed, the goal is to land at 0
 - [ ] **bug: lesson 8**
   - · empty line
   - is cnfusing i think it should just literaly show an empty line (we still have the $ prefix) and then the cursor position below
@@ -18,6 +15,8 @@
 
 
 ## Archive
+
+- [x] **reverse keys count display** — Count down from each lesson's optimal key budget, keeping the sign column stable and allowing negative values.
 
 - [x] **notification area**
   - below the area that says   ENTER submit   ESC reset   CTRL+C quit we want a new notification line.

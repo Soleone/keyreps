@@ -141,11 +141,16 @@ function renderStatsStrip(state: GameState): string {
 
 function renderKeyStat(state: GameState): string {
   const challenge = currentChallenge(state);
+  const remainingKeys = challenge === undefined ? 0 : challenge.idealKeys - state.keyCount;
   const performance = challenge !== undefined && state.keyCount >= challenge.idealKeys
     ? keyPerformance(state.keyCount, challenge.idealKeys)
     : null;
   const color = performance === null ? "text" : performanceColor(performance);
-  return paint(color, `KEYS ${state.keyCount}`, "1");
+  return paint(color, `KEYS ${formatRemainingKeys(remainingKeys)}`, "1");
+}
+
+function formatRemainingKeys(value: number): string {
+  return value >= 0 ? ` ${value}` : `${value}`;
 }
 
 function renderControls(): string {

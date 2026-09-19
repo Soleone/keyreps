@@ -51,7 +51,7 @@ test("condenses the lesson heading and guidance", () => {
   const editorIndex = output.indexOf("╭─");
   const focusIndex = output.indexOf("Ctrl+A start of line");
   const guidanceIndex = output.indexOf("• Prefix");
-  const scoreIndex = output.indexOf("KEYS 0");
+  const scoreIndex = output.indexOf("KEYS  6");
 
   assert.equal(outputLines[0], "  ");
   assert.equal(headingLine?.startsWith("  01 ·"), true);
@@ -141,12 +141,36 @@ test("shows keyboard presses instead of an abstract score", () => {
 
   const output = plainRender(state);
 
-  assert.match(output, /KEYS 0 · MISSES 0 · TOTAL 6/);
+  assert.match(output, /KEYS  9 · MISSES 0 · TOTAL 6/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });
 
+test("counts the remaining optimal keys down through zero", () => {
+  const challenge = challenges[0];
+  assert.ok(challenge);
+
+  const initial = plainRender(startGame());
+  assert.match(initial, /KEYS  6 · MISSES 0 · TOTAL 0/);
+
+  const atGoal = plainRender({
+    ...startGame(),
+    keyCount: challenge.idealKeys,
+  });
+  assert.match(atGoal, /KEYS  0 · MISSES 0 · TOTAL 0/);
+
+  const overBudget = plainRender({
+    ...startGame(),
+    keyCount: challenge.idealKeys + 1,
+  });
+  assert.match(overBudget, /KEYS -1 · MISSES 0 · TOTAL 0/);
+
+  const atGoalLine = atGoal.split("\n").find((line) => line.includes("KEYS  0"));
+  const overBudgetLine = overBudget.split("\n").find((line) => line.includes("KEYS -1"));
+  assert.equal(atGoalLine?.indexOf("MISSES"), overBudgetLine?.indexOf("MISSES"));
+});
+
 test("keeps the stats highlight at the common left padding", () => {
-  const line = renderGame(startGame()).split("\n").find((value) => value.includes("KEYS 0"));
+  const line = renderGame(startGame()).split("\n").find((value) => value.includes("KEYS  6"));
   const escape = String.fromCharCode(27);
 
   assert.equal(line?.startsWith(`  ${escape}[`), true);
