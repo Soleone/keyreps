@@ -35,24 +35,24 @@ test("renders each current stage instruction as a bullet", () => {
   assert.doesNotMatch(output, /`/);
 });
 
-test("orders the lesson title, goal, input, details, and score", () => {
+test("orders the lesson title, goal, editor, details, and score", () => {
   const output = plainRender(startGame());
 
   assert.match(output, /Typegod · UNIX KEYBOARD KATAS/);
   assert.match(output, /01 · Line start/);
   assert.match(output, /╭─/);
-  assert.match(output, /INPUT/);
+  assert.doesNotMatch(output, /INPUT/);
 
   const titleIndex = output.indexOf("Get to the start");
   const goalIndex = output.indexOf("GOAL");
-  const inputIndex = output.indexOf("INPUT");
+  const editorIndex = output.indexOf("╭─");
   const detailsIndex = output.indexOf("DETAILS");
   const scoreIndex = output.indexOf("KEYS 0");
 
   assert.ok(titleIndex >= 0);
   assert.ok(titleIndex < goalIndex);
-  assert.ok(goalIndex < inputIndex);
-  assert.ok(inputIndex < detailsIndex);
+  assert.ok(goalIndex < editorIndex);
+  assert.ok(editorIndex < detailsIndex);
   assert.ok(detailsIndex < scoreIndex);
 });
 
@@ -99,12 +99,12 @@ test("puts status below the current input as one line", () => {
   const state = press(startGame(), control("a"));
   const lines = plainRender(state).split("\n");
   const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
-  const inputIndex = lines.findIndex((line) => line.includes("INPUT"));
+  const editorIndex = lines.findIndex((line) => line.includes("╭─"));
   const detailsIndex = lines.findIndex((line) => line.includes("DETAILS"));
   const statusIndex = lines.findIndex((line) => line.includes("STATUS"));
 
-  assert.ok(goalIndex < inputIndex);
-  assert.ok(inputIndex < statusIndex);
+  assert.ok(goalIndex < editorIndex);
+  assert.ok(editorIndex < statusIndex);
   assert.ok(statusIndex < detailsIndex);
   assert.equal(lines[statusIndex - 1]?.trim(), "");
   assert.equal(lines[statusIndex + 1]?.trim(), "");

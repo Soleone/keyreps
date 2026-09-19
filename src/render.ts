@@ -47,11 +47,10 @@ export function renderGame(state: GameState): string {
   const challengeContent = [
     ...challengeHeading,
     "",
-    paint("info", iconLabel(icons.target, "GOAL"), "2"),
+    paint("info", "GOAL", "2"),
     `  ${paint("dim", `$ ${formatTarget(challenge.target)}`, "2")}`,
     `  ${targetMarker(challenge.target, challenge.targetCursor)}`,
     "",
-    paint("info", iconLabel(icons.terminal, "INPUT"), "2"),
     ...renderEditorBlock(state.editor),
     ...(state.message.length > 0 ? ["", renderStatus(state.message, state.lastPerformance)] : []),
     "",
