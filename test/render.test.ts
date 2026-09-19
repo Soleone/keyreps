@@ -29,7 +29,8 @@ test("renders each current stage instruction as a bullet", () => {
   const output = plainRender(state);
 
   assert.match(output, /• Move left once\./);
-  assert.match(output, /• Insert `t`\./);
+  assert.match(output, /• Insert t\./);
+  assert.doesNotMatch(output, /`/);
 });
 
 test("makes the editor a focused input before the goal", () => {

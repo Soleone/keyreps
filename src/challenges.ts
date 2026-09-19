@@ -22,7 +22,7 @@ export const challenges: Challenge[] = [
   {
     id: "line-start",
     title: "Get to the start",
-    instructions: ["Prefix the command with `sudo `."],
+    instructions: ["Prefix the command with sudo followed by a space."],
     hint: "Ctrl+A jumps to the beginning of the line.",
     start: "systemctl restart api",
     startCursor: length("systemctl restart api"),
@@ -36,7 +36,7 @@ export const challenges: Challenge[] = [
   {
     id: "line-end",
     title: "Get to the end",
-    instructions: ["Append ` --short` to the command."],
+    instructions: ["Append --short to the command."],
     hint: "Ctrl+E jumps to the end of the line.",
     start: "git status",
     startCursor: 0,
@@ -50,7 +50,7 @@ export const challenges: Challenge[] = [
   {
     id: "char-left",
     title: "One character back",
-    instructions: ["Move left once.", "Insert `t`."],
+    instructions: ["Move left once.", "Insert t."],
     hint: "Ctrl+B moves backward by one character.",
     start: "git staus",
     startCursor: 8,
@@ -64,7 +64,7 @@ export const challenges: Challenge[] = [
   {
     id: "char-right",
     title: "One character forward",
-    instructions: ["Move right once.", "Insert `t`."],
+    instructions: ["Move right once.", "Insert t."],
     hint: "Ctrl+F moves forward by one character.",
     start: "git staus",
     startCursor: 6,
@@ -78,7 +78,7 @@ export const challenges: Challenge[] = [
   {
     id: "word-left",
     title: "Jump back a word",
-    instructions: ["Move to the start of `feature`.", "Insert `switch `."],
+    instructions: ["Move to the start of feature.", "Insert switch followed by a space."],
     hint: "Alt+B or Ctrl+Left moves backward by one word.",
     start: "git feature",
     startCursor: length("git feature"),
@@ -92,7 +92,7 @@ export const challenges: Challenge[] = [
   {
     id: "word-right",
     title: "Jump forward a word",
-    instructions: ["Move past `login`.", "Insert ` --verbose`."],
+    instructions: ["Move past login.", "Insert --verbose with a leading space."],
     hint: "Alt+F or Ctrl+Right moves forward by one word.",
     start: "git login --force",
     startCursor: length("git "),
@@ -106,7 +106,7 @@ export const challenges: Challenge[] = [
   {
     id: "kill-to-end",
     title: "Clear to the end",
-    instructions: ["Remove `--short` while keeping `git status `."],
+    instructions: ["Remove --short while keeping git status and its trailing space."],
     hint: "Ctrl+K kills everything from the cursor to the end.",
     start: "git status --short",
     startCursor: length("git status "),
@@ -134,7 +134,7 @@ export const challenges: Challenge[] = [
   {
     id: "kill-previous-word",
     title: "Kill the previous word",
-    instructions: ["Remove the word `message`."],
+    instructions: ["Remove the word message."],
     hint: "Ctrl+W kills the previous word and its separating space.",
     start: "git commit message",
     startCursor: length("git commit message"),
@@ -148,7 +148,7 @@ export const challenges: Challenge[] = [
   {
     id: "kill-next-word",
     title: "Kill the next word",
-    instructions: ["From after `git `, remove `commit `."],
+    instructions: ["From after git, remove commit and its trailing space."],
     hint: "Alt+D kills the next word and its following space.",
     start: "git commit message",
     startCursor: length("git "),
@@ -162,7 +162,7 @@ export const challenges: Challenge[] = [
   {
     id: "yank",
     title: "Yank it back",
-    instructions: ["Kill `--short`.", "Restore it with one yank."],
+    instructions: ["Kill --short.", "Restore it with one yank."],
     hint: "Ctrl+Y inserts the most recently killed text.",
     start: "git status --short",
     startCursor: length("git status "),
@@ -176,7 +176,7 @@ export const challenges: Challenge[] = [
   {
     id: "transpose",
     title: "Transpose a typo",
-    instructions: ["Fix `stauts` by transposing the two middle letters."],
+    instructions: ["Fix stauts by transposing the two middle letters."],
     hint: "Ctrl+T swaps the character before and at the cursor.",
     start: "git stauts",
     startCursor: 8,
@@ -190,7 +190,7 @@ export const challenges: Challenge[] = [
   {
     id: "delete-character",
     title: "Delete under the cursor",
-    instructions: ["Delete the extra `t` under the cursor."],
+    instructions: ["Delete the extra t under the cursor."],
     hint: "Ctrl+D deletes the character at the cursor.",
     start: "git sttatus",
     startCursor: 6,
