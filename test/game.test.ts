@@ -48,6 +48,19 @@ const optimalPaths: Record<string, Key[]> = {
   yank: [control("k"), control("y")],
   transpose: [control("t")],
   "delete-character": [control("d")],
+  "line-start-prefix": [control("a"), text("env APP_ENV=test ")],
+  "line-end-redirect": [control("e"), text(" 2>&1")],
+  "char-left-missing-letter": [control("b"), text("n")],
+  "char-right-missing-letter": [control("f"), text("c")],
+  "word-left-option": [alt("b"), text("--dry-run ")],
+  "word-right-option": [alt("f"), text(" --rm")],
+  "kill-to-end-options": [control("k")],
+  "kill-to-start-prefix": [control("u")],
+  "kill-previous-option": [control("w")],
+  "kill-next-prefix": [alt("d")],
+  "yank-command": [control("u"), control("y")],
+  "transpose-at-end": [control("t")],
+  "delete-option-character": [control("d")],
 };
 
 test("every lesson's optimal path matches its perfect key count", () => {
@@ -65,6 +78,30 @@ test("every lesson's optimal path matches its perfect key count", () => {
     state = press(state, enter);
     assert.equal(state.lastKeyCount, challenge.idealKeys, challenge.id);
     assert.equal(state.lastPerformance, "perfect", challenge.id);
+  }
+});
+
+test("core shortcuts are practiced in different scenarios", () => {
+  const repeatedFocuses = [
+    "line-start",
+    "line-end",
+    "move-char-left",
+    "move-char-right",
+    "move-word-left",
+    "move-word-right",
+    "kill-to-end",
+    "kill-to-start",
+    "kill-previous-word",
+    "kill-next-word",
+    "yank",
+    "transpose",
+    "delete-next-char",
+  ] as const;
+
+  for (const focus of repeatedFocuses) {
+    const scenarios = challenges.filter((challenge) => challenge.focus === focus);
+    assert.ok(scenarios.length >= 2, `${focus} needs multiple scenarios`);
+    assert.equal(new Set(scenarios.map((scenario) => scenario.start)).size, scenarios.length);
   }
 });
 

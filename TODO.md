@@ -5,7 +5,6 @@
 
 ## Next
 
-- [ ] **some commands should probably have multiple stages** — different scenarios, build muscle memory
 - [ ] **build more combination stages at the end**
   - intermediate stages should combine multiple commands
   - expert tier stages should hide the instructions upfront and just show if you wasted keystrokes
@@ -15,6 +14,7 @@
 
 ## Archive
 
+- [x] **some commands should probably have multiple stages** — different scenarios, build muscle memory
 - [x] **Don't use black tics for wrong characters, those don't get rendered anyway.**
 - [x] **make "target cursor" more muted, yellow or accent is overkill. also try to make more elegant in how it looks with nerdfont potentially**
 - [x] **for the shortcut also add a brief description right after, just a few words**
