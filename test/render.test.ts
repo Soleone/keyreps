@@ -35,25 +35,26 @@ test("renders each current stage instruction as a bullet", () => {
   assert.doesNotMatch(output, /`/);
 });
 
-test("orders the lesson title, goal, editor, details, and score", () => {
+test("condenses the lesson heading and guidance", () => {
   const output = plainRender(startGame());
 
   assert.match(output, /Typegod · UNIX KEYBOARD KATAS/);
-  assert.match(output, /01 · Line start/);
+  assert.match(output, /01 · Line start · Get to the start/);
   assert.match(output, /╭─/);
-  assert.doesNotMatch(output, /INPUT/);
+  assert.doesNotMatch(output, /INPUT|DETAILS/);
 
-  const titleIndex = output.indexOf("Get to the start");
+  const headingLine = output.split("\n").find((line) => line.includes("01 · Line start"));
+  const headingIndex = output.indexOf("01 · Line start");
   const goalIndex = output.indexOf("GOAL");
   const editorIndex = output.indexOf("╭─");
-  const detailsIndex = output.indexOf("DETAILS");
+  const guidanceIndex = output.indexOf("• Prefix");
   const scoreIndex = output.indexOf("KEYS 0");
 
-  assert.ok(titleIndex >= 0);
-  assert.ok(titleIndex < goalIndex);
+  assert.equal(headingLine?.startsWith("01 ·"), true);
+  assert.ok(headingIndex < goalIndex);
   assert.ok(goalIndex < editorIndex);
-  assert.ok(editorIndex < detailsIndex);
-  assert.ok(detailsIndex < scoreIndex);
+  assert.ok(editorIndex < guidanceIndex);
+  assert.ok(guidanceIndex < scoreIndex);
 });
 
 test("aligns the input and goal command", () => {
@@ -69,7 +70,8 @@ test("aligns the input and goal command", () => {
   assert.ok(inputLine >= 0);
   assert.ok(inputValueLine >= 0);
   assert.match(lines[inputValueLine] ?? "", /\$ sudo systemctl restart api/);
-  assert.match(lines.join("\n"), /TIP Ctrl\+A jumps/);
+  assert.match(lines.join("\n"), /Ctrl\+A · start of line/);
+  assert.doesNotMatch(lines.join("\n"), /TIP|Ctrl\+A jumps/);
   assert.ok(targetLine !== undefined);
   assert.ok(markerLine !== undefined);
   assert.equal(lines[inputValueLine]?.indexOf("sudo"), targetLine?.indexOf("sudo"));
@@ -100,15 +102,22 @@ test("puts status below the current input as one line", () => {
   const lines = plainRender(state).split("\n");
   const goalIndex = lines.findIndex((line) => line.includes("GOAL"));
   const editorIndex = lines.findIndex((line) => line.includes("╭─"));
-  const detailsIndex = lines.findIndex((line) => line.includes("DETAILS"));
   const statusIndex = lines.findIndex((line) => line.includes("STATUS"));
+  const guidanceIndex = lines.findIndex((line) => line.includes("• Prefix"));
 
   assert.ok(goalIndex < editorIndex);
   assert.ok(editorIndex < statusIndex);
-  assert.ok(statusIndex < detailsIndex);
+  assert.ok(statusIndex < guidanceIndex);
   assert.equal(lines[statusIndex - 1]?.trim(), "");
   assert.equal(lines[statusIndex + 1]?.trim(), "");
   assert.doesNotMatch(lines[statusIndex] ?? "", /\n/);
+});
+
+test("keeps the controls text-only", () => {
+  const output = plainRender(startGame());
+
+  assert.match(output, /ENTER submit   ESC reset   CTRL\+C quit/);
+  assert.doesNotMatch(output, /||/);
 });
 
 test("shows keyboard presses instead of an abstract score", () => {

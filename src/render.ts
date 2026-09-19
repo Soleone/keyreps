@@ -37,15 +37,12 @@ export function renderGame(state: GameState): string {
 
   const drillName = formatDrillName(challenge.id);
   const drillLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${drillName}`;
-  const challengeHeading = [
-    `  ${paint("text", challenge.title, "1")}`,
-    alignColumns(
-      `  ${paint("accent", drillLabel, "1")}`,
-      `  ${renderProgressLabel(state)}`,
-    ),
-  ];
+  const challengeHeading = alignColumns(
+    `${paint("accent", `${drillLabel} ·`, "1")} ${paint("text", challenge.title, "1")}`,
+    renderProgressLabel(state),
+  );
   const challengeContent = [
-    ...challengeHeading,
+    challengeHeading,
     "",
     paint("info", "GOAL", "2"),
     `  ${paint("dim", `$ ${formatTarget(challenge.target)}`, "2")}`,
@@ -54,7 +51,6 @@ export function renderGame(state: GameState): string {
     ...renderEditorBlock(state.editor),
     ...(state.message.length > 0 ? ["", renderStatus(state.message, state.lastPerformance)] : []),
     "",
-    paint("info", "DETAILS", "2"),
     ...renderChallengeGuidance(state, challenge),
   ];
 
@@ -146,7 +142,7 @@ function renderKeyStat(state: GameState): string {
 }
 
 function renderControls(): string {
-  return `${paint("success", iconLabel(icons.submit, "ENTER"), "1")} submit   ${paint("warning", iconLabel(icons.reset, "ESC"), "1")} reset   ${paint("error", iconLabel(icons.quit, "CTRL+C"), "1")} quit`;
+  return `${paint("success", "ENTER", "1")} submit   ${paint("warning", "ESC", "1")} reset   ${paint("error", "CTRL+C", "1")} quit`;
 }
 
 function panel(title: string, contents: string[]): string[] {
@@ -266,7 +262,6 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
   guidance.push(
     "",
     `  ${paint("accent", challenge.focusLabel, "1")} ${paint("muted", `· ${challenge.focusDescription}`, "2")}`,
-    ...renderHint(challenge.hint),
   );
   return guidance;
 }
@@ -276,12 +271,6 @@ function renderInstructionList(instructions: string[]): string[] {
     wrapText(instruction, PANEL_CONTENT_WIDTH - 4).map((line, index) =>
       `${index === 0 ? `  ${paint("accent", "•", "1")} ` : "    "}${line}`,
     ),
-  );
-}
-
-function renderHint(hint: string): string[] {
-  return wrapText(hint, PANEL_CONTENT_WIDTH - 8).map((line, index) =>
-    `${index === 0 ? `  ${paint("muted", iconLabel(icons.hint, "TIP"), "2")} ` : "      "}${paint("dim", line, "2")}`,
   );
 }
 
