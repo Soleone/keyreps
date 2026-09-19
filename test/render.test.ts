@@ -20,14 +20,15 @@ function press(state: ReturnType<typeof startGame>, key: Key) {
 }
 
 test("renders each current stage instruction as a bullet", () => {
-  let state = startGame();
-  state = press(state, control("a"));
-  state = press(state, text("sudo "));
-  state = press(state, enter);
-  state = press(state, control("e"));
-  state = press(state, text(" --short"));
-  state = press(state, enter);
+  const challengeIndex = challenges.findIndex((challenge) => challenge.id === "char-left");
+  const challenge = challenges[challengeIndex];
+  assert.ok(challenge);
 
+  const state = {
+    ...startGame(),
+    challengeIndex,
+    editor: createEditor(challenge.start, challenge.startCursor),
+  };
   const output = plainRender(state);
 
   assert.match(output, /• Move left once/);
@@ -153,14 +154,18 @@ test("keeps the controls text-only", () => {
 });
 
 test("shows keyboard presses instead of an abstract score", () => {
-  let state = startGame();
-  state = press(state, control("a"));
-  state = press(state, text("sudo "));
-  state = press(state, enter);
+  const challengeIndex = challenges.findIndex((challenge) => challenge.id === "line-end");
+  const challenge = challenges[challengeIndex];
+  assert.ok(challenge);
 
+  const state = {
+    ...startGame(),
+    challengeIndex,
+    editor: createEditor(challenge.start, challenge.startCursor),
+  };
   const output = plainRender(state);
 
-  assert.match(output, /KEYS  9/);
+  assert.match(output, new RegExp(`KEYS  ${challenge.idealKeys}`));
   assert.doesNotMatch(output, /MISSES|TOTAL/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });

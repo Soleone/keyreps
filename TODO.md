@@ -5,7 +5,7 @@
 
 ## Next
 
-- [ ] **challenge 14 is exactly like challenge 1** — we should not have so similar challenges. and if we have similar challenges for a good reason, and thechallenges are on the same tier for the same key, then tey should be co-located
+- [x] **challenge 14 is exactly like challenge 1** — we should not have so similar challenges. and if we have similar challenges for a good reason, and thechallenges are on the same tier for the same key, then tey should be co-located
 
 ## Later
 

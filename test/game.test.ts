@@ -119,6 +119,28 @@ test("core shortcuts are practiced in different scenarios", () => {
   }
 });
 
+test("same-tier drills for one shortcut are co-located", () => {
+  const positions = new Map<string, number[]>();
+
+  challenges.forEach((challenge, index) => {
+    const key = `${challenge.tier}:${challenge.focus}`;
+    const indexes = positions.get(key) ?? [];
+    indexes.push(index);
+    positions.set(key, indexes);
+  });
+
+  for (const [shortcut, indexes] of positions) {
+    if (indexes.length < 2) {
+      continue;
+    }
+
+    const first = indexes.at(0);
+    const last = indexes.at(-1);
+    assert.ok(first !== undefined && last !== undefined);
+    assert.equal(last - first + 1, indexes.length, `${shortcut} drills should be adjacent`);
+  }
+});
+
 test("Ctrl+C requests a clean quit", () => {
   const state = startGame();
   const result = handleKey(state, control("c"));
