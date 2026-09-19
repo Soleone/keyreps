@@ -73,11 +73,11 @@ function renderFinished(state: GameState): string {
   const result = [
     `${paint("success", "All keyboard drills cleared.", "1")}`,
     "",
-    `${paint("muted", "DRILLS COMPLETED", "2")}  ${paint("text", `${state.completed} / ${challenges.length}`, "1")}`,
-    `${paint("muted", "KEY PRESSES", "2")}       ${paint(performanceColor(totalPerformance), `${state.totalKeys} · ${performanceLabel(totalPerformance)}`, "1")}`,
+    `${paint("text", "DRILLS COMPLETED", "2")}  ${paint("text", `${state.completed} / ${challenges.length}`, "1")}`,
+    `${paint("text", "KEY PRESSES", "2")}       ${paint(performanceColor(totalPerformance), `${state.totalKeys} · ${performanceLabel(totalPerformance)}`, "1")}`,
     state.lastKeyCount === null
       ? ""
-      : `${paint("muted", "LAST DRILL", "2")}          ${paint(performanceColor(state.lastPerformance), `${state.lastKeyCount} ${keyPressLabel(state.lastKeyCount)} · ${performanceLabel(state.lastPerformance)}`, "1")}`,
+      : `${paint("text", "LAST DRILL", "2")}          ${paint(performanceColor(state.lastPerformance), `${state.lastKeyCount} ${keyPressLabel(state.lastKeyCount)} · ${performanceLabel(state.lastPerformance)}`, "1")}`,
   ];
 
   const lines = [
@@ -87,7 +87,7 @@ function renderFinished(state: GameState): string {
     "",
     renderStatsStrip(state),
     "",
-    `${paint("accent", "R", "1")} play again   ${paint("muted", "CTRL+C", "2")} quit`,
+    `${paint("accent", "R", "1")} play again   ${paint("text", "CTRL+C", "2")} quit`,
   ];
 
   return renderScreen(lines);
@@ -123,7 +123,7 @@ function renderProgressLabel(state: GameState): string {
   const completed = Math.max(0, Math.min(state.completed, challenges.length));
   const progress = progressBar(completed, challenges.length, 14);
   const percent = Math.round((completed / challenges.length) * 100);
-  return `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("muted", `${percent}%`, "2")}`;
+  return `${paint("accent", progress.filled, "1")}${paint("dim", progress.empty, "2")}  ${paint("text", `${percent}%`, "2")}`;
 }
 
 function renderStatsStrip(state: GameState): string {
@@ -141,12 +141,12 @@ function renderKeyStat(state: GameState): string {
   const performance = challenge !== undefined && state.keyCount >= challenge.idealKeys
     ? keyPerformance(state.keyCount, challenge.idealKeys)
     : null;
-  const color = performance === null ? "muted" : performanceColor(performance);
+  const color = performance === null ? "text" : performanceColor(performance);
   return paint(color, `KEYS ${state.keyCount}`, "1");
 }
 
 function renderControls(): string {
-  return `${paint("success", "ENTER", "1")} ${paint("muted", "submit", "2")}   ${paint("warning", "ESC", "1")} ${paint("muted", "reset", "2")}   ${paint("error", "CTRL+C", "1")} ${paint("muted", "quit", "2")}`;
+  return `${paint("success", "ENTER", "1")} ${paint("text", "submit", "2")}   ${paint("warning", "ESC", "1")} ${paint("text", "reset", "2")}   ${paint("error", "CTRL+C", "1")} ${paint("text", "quit", "2")}`;
 }
 
 function panel(title: string, contents: string[]): string[] {
@@ -239,7 +239,7 @@ function renderChallengeGuidance(state: GameState, challenge: Challenge): string
 
   if (expert && !revealed) {
     return [
-      paint("muted", "EXPERT · instructions hidden", "1"),
+      paint("text", "EXPERT · instructions hidden", "1"),
       paint("dim", "Solve from memory. Guidance appears after a wasted key press.", "2"),
     ];
   }
