@@ -63,7 +63,7 @@ export function renderGame(state: GameState): string {
     renderStatsStrip(state),
     "",
     renderControls(),
-    ...(state.notification === null ? [] : ["", renderNotification(state.notification)]),
+    ...(state.notification === null ? [] : ["", "", renderNotification(state.notification)]),
   ];
 
   return renderScreen(lines);
@@ -90,7 +90,7 @@ function renderFinished(state: GameState): string {
     renderStatsStrip(state),
     "",
     `${paint("accent", "R", "1")} play again   ${paint("text", "CTRL+C", "2")} quit`,
-    ...(state.notification === null ? [] : ["", renderNotification(state.notification)]),
+    ...(state.notification === null ? [] : ["", "", renderNotification(state.notification)]),
   ];
 
   return renderScreen(lines);
@@ -155,7 +155,7 @@ function renderControls(): string {
 function renderNotification(notification: LessonNotification): string {
   const color = performanceColor(notification.performance);
   const icon = icons.submit.length > 0 ? icons.submit : "✓";
-  return `${paint(color, icon, "1")} ${paint(color, performanceLabel(notification.performance), "1")} ${paint("dim", "·", "2")} ${paint("text", notification.text, "2")}`;
+  return `${paint(color, icon, "1")} ${paint(color, performanceLabel(notification.performance), "1")} ${paint("text", notification.text, "2")}`;
 }
 
 function panel(title: string, contents: string[]): string[] {

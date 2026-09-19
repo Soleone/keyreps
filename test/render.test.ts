@@ -113,10 +113,11 @@ test("shows a completion notification below the controls", () => {
   const controlsIndex = lines.findIndex((line) => line.includes("ENTER submit"));
   const notificationIndex = lines.findIndex((line) => line.includes("Lesson complete"));
 
-  assert.match(output, /✓ Perfect · Lesson complete/);
+  assert.match(output, /✓ Perfect Lesson complete/);
   assert.ok(controlsIndex >= 0);
-  assert.ok(notificationIndex > controlsIndex);
+  assert.equal(notificationIndex - controlsIndex, 3);
   assert.equal(lines[notificationIndex - 1]?.trim(), "");
+  assert.equal(lines[notificationIndex - 2]?.trim(), "");
 });
 
 test("does not show a completion notification before a lesson is solved", () => {
