@@ -121,12 +121,21 @@ function renderProgressLabel(state: GameState): string {
 
 function renderStatsStrip(state: GameState): string {
   const content = [
-    `KEYS ${state.keyCount}`,
+    renderKeyStat(state),
     `MISSES ${state.mistakes}`,
     `TOTAL ${state.totalKeys}`,
   ].join(" · ");
 
   return backgroundLine(`  ${content}`);
+}
+
+function renderKeyStat(state: GameState): string {
+  const challenge = currentChallenge(state);
+  const performance = challenge !== undefined && state.keyCount >= challenge.idealKeys
+    ? keyPerformance(state.keyCount, challenge.idealKeys)
+    : null;
+  const color = performance === null ? "muted" : performanceColor(performance);
+  return paint(color, `KEYS ${state.keyCount}`, "1");
 }
 
 function renderControls(): string {

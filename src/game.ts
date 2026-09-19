@@ -93,6 +93,7 @@ export function handleKey(state: GameState, key: Key): KeyResult {
   }
 
   const focusUsed = state.focusUsed || applied.action === challenge.focus;
+  const keyPresses = key.type === "text" ? Array.from(key.value).length : 1;
   const message =
     !state.focusUsed && applied.action === challenge.focus
       ? `Shortcut registered: ${challenge.focusLabel}.`
@@ -102,7 +103,7 @@ export function handleKey(state: GameState, key: Key): KeyResult {
     state: {
       ...state,
       editor: applied.state,
-      keyCount: state.keyCount + 1,
+      keyCount: state.keyCount + keyPresses,
       focusUsed,
       message,
     },
@@ -170,11 +171,12 @@ function resultMessage(
     ? "Perfect."
     : performance === "close"
       ? "Close to the expected amount."
-      : "Too many key presses.";
+      : "More than expected.";
+  const outcome = performance === "poor" ? "Solved, but" : "Solved.";
   const shortcutReminder = state.focusUsed
     ? ""
     : ` Use ${challenge.focusLabel} next time for the shortcut.`;
-  return `Correct. ${state.keyCount} ${keyLabel}. ${rating}${shortcutReminder}`;
+  return `${outcome} ${state.keyCount} ${keyLabel}. ${rating}${shortcutReminder}`;
 }
 
 function makeChallengeState(

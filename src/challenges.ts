@@ -12,6 +12,7 @@ export interface Challenge {
   focus: EditorAction;
   focusLabel: string;
   focusDescription: string;
+  /** Minimum physical keyboard presses, excluding Enter used to submit. */
   idealKeys: number;
 }
 
@@ -30,7 +31,7 @@ export const challenges: Challenge[] = [
     focus: "line-start",
     focusLabel: "Ctrl+A",
     focusDescription: "start of line",
-    idealKeys: 2,
+    idealKeys: 1 + length("sudo "),
   },
   {
     id: "line-end",
@@ -44,7 +45,7 @@ export const challenges: Challenge[] = [
     focus: "line-end",
     focusLabel: "Ctrl+E",
     focusDescription: "end of line",
-    idealKeys: 2,
+    idealKeys: 1 + length(" --short"),
   },
   {
     id: "char-left",
@@ -86,7 +87,7 @@ export const challenges: Challenge[] = [
     focus: "move-word-left",
     focusLabel: "Alt+B / Ctrl+Left",
     focusDescription: "previous word",
-    idealKeys: 2,
+    idealKeys: 1 + length("switch "),
   },
   {
     id: "word-right",
@@ -100,7 +101,7 @@ export const challenges: Challenge[] = [
     focus: "move-word-right",
     focusLabel: "Alt+F / Ctrl+Right",
     focusDescription: "next word",
-    idealKeys: 2,
+    idealKeys: 1 + length(" --verbose"),
   },
   {
     id: "kill-to-end",

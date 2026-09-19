@@ -83,8 +83,8 @@ test("shows keyboard presses instead of an abstract score", () => {
 
   const output = plainRender(state);
 
-  assert.match(output, /Correct\. 2 key presses\. Perfect\./);
-  assert.match(output, /KEYS 0 · MISSES 0 · TOTAL 2/);
+  assert.match(output, /Solved\. 6 key presses\. Perfect\./);
+  assert.match(output, /KEYS 0 · MISSES 0 · TOTAL 6/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });
 
@@ -93,7 +93,7 @@ test("shows the final keyboard press total", () => {
     ...startGame(),
     finished: true,
     completed: 13,
-    totalKeys: 20,
+    totalKeys: 46,
     keyCount: 1,
     lastKeyCount: 1,
     lastPerformance: "perfect" as const,
@@ -101,7 +101,7 @@ test("shows the final keyboard press total", () => {
 
   const output = plainRender(state);
 
-  assert.match(output, /KEY PRESSES\s+20/);
+  assert.match(output, /KEY PRESSES\s+46/);
   assert.match(output, /LAST DRILL\s+1 key press · Perfect/);
   assert.doesNotMatch(output, /SCORE|points|FINAL SCORE/);
 });
