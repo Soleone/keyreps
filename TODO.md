@@ -5,6 +5,14 @@
 
 ## Next
 
+- [ ] **notification area**
+  - below the area that says   ENTER submit   ESC reset   CTRL+C quit we want a new notification line.
+  - it is mainly relevant when completing a lesson. it should show for 3s. it has 3 sections:
+  - icon
+  - status (colored)
+  - text
+  - e.g. check mark icon Perfect separator Lesson completer
+
 ## Later
 
 
