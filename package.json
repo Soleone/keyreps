@@ -13,6 +13,7 @@
     "build": "tsc && chmod +x dist/src/cli.js",
     "prepare": "npm run build",
     "prepack": "npm run build",
+    "postversion": "node scripts/patch-np-auth.mjs",
     "release": "np",
     "start": "node dist/src/cli.js",
     "test": "npm run build && node --test dist/test/*.test.js",

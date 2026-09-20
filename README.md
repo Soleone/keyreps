@@ -47,7 +47,8 @@ keyreps
 Releases use [`np`](https://github.com/sindresorhus/np) from a clean `main` or
 `master` checkout. Release tooling requires Node 22+ and npm 10+; the CLI itself
 still supports Node 20+. It runs the tests, bumps the package version, creates a
-Git tag, and publishes to npm.
+Git tag, and publishes to npm. A release hook prints npm's WebAuthn URL when a
+passkey is required.
 
 Preview a release without changing Git or publishing anything:
 
