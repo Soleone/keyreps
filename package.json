@@ -6,17 +6,46 @@
   "bin": {
     "keyreps": "dist/src/cli.js"
   },
+  "files": [
+    "dist/src"
+  ],
   "scripts": {
     "build": "tsc && chmod +x dist/src/cli.js",
+    "prepare": "npm run build",
+    "prepack": "npm run build",
+    "release": "np",
     "start": "node dist/src/cli.js",
     "test": "npm run build && node --test dist/test/*.test.js",
     "typecheck": "tsc --noEmit"
   },
+  "keywords": [
+    "cli",
+    "terminal",
+    "game",
+    "readline",
+    "unix",
+    "keyboard-shortcuts"
+  ],
+  "author": "Soleone <dev@soleone.xyz>",
+  "license": "MIT",
   "engines": {
     "node": ">=20"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": ">=10",
+      "onFail": "warn"
+    }
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "np": "^12.1.1",
     "typescript": "^5.6.0"
   }
 }

@@ -7,9 +7,24 @@ Each drill gives you a target line and tracks the keyboard presses needed to sol
 it. The expected number is perfect in green, up to two extra presses are close in
 yellow, and larger detours are red.
 
-## Run
+## Install
 
-Requires Node.js 20 or newer.
+Requires Node.js 20 or newer. Once published, install Key Reps globally:
+
+```bash
+npm install --global keyreps
+keyreps
+```
+
+You can also run it without a global install:
+
+```bash
+npx keyreps
+```
+
+## Development
+
+From a checkout, install dependencies, run the tests, and start the compiled CLI:
 
 ```bash
 npm install
@@ -23,6 +38,25 @@ For local development, `npm link` makes the command available as `keyreps`.
 ```bash
 npm link
 keyreps
+```
+
+## Release
+
+Releases use [`np`](https://github.com/sindresorhus/np) from a clean `main` or
+`master` checkout. Release tooling requires Node 22+ and npm 10+; the CLI itself
+still supports Node 20+. It runs the tests, bumps the package version, creates a
+Git tag, and publishes to npm.
+
+Preview a release without changing Git or publishing anything:
+
+```bash
+npm run release -- 0.1.1 --dry-run --no-publish
+```
+
+To perform a release, choose a version increment instead:
+
+```bash
+npm run release -- patch
 ```
 
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
