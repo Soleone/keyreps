@@ -38,9 +38,9 @@ export function renderGame(state: GameState): string {
     return renderScreen([paint("error", "No challenge loaded.", "1")]);
   }
 
-  const lessonLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${challenge.title}`;
+  const lessonNumber = String(state.challengeIndex + 1).padStart(2, "0");
   const challengeHeading = alignColumns(
-    paint("text", lessonLabel, "1"),
+    `${paint("accent", lessonNumber, "1")}${paint("text", ` · ${challenge.title}`, "1")}`,
     renderProgressLabel(state),
   );
   const challengeContent = [
@@ -115,7 +115,7 @@ function renderHeader(state: GameState, title = "Learn to control the unix keybo
     : `${String(state.challengeIndex + 1).padStart(2, "0")} / ${String(challenges.length).padStart(2, "0")}`;
   const lines = [
     headerLine(
-      `${paintHeader("accent", "Typegod ·", "1")} ${paintHeader("text", title, "1")}`,
+      `${paintHeader("accent", "Typegod", "1")}${paintHeader("text", ` · ${title}`, "1")}`,
       paintHeader("accent", drillLabel, "1"),
     ),
   ];

@@ -5,13 +5,14 @@
 
 ## Next
 
-- [x] **challenge 14 is exactly like challenge 1** — we should not have so similar challenges. and if we have similar challenges for a good reason, and thechallenges are on the same tier for the same key, then tey should be co-located
+- [ ] **for duplicate lessons of the same key spice things up** — have the second or third lesson require something else. e.g. starting at a different cursor position
 
 ## Later
 
 
 ## Archive
 
+- [x] **challenge 14 is exactly like challenge 1** — we should not have so similar challenges. and if we have similar challenges for a good reason, and thechallenges are on the same tier for the same key, then tey should be co-located
 - [x] **remove · MISSES 0 · TOTAL 27** — keep the current lesson key budget and all-lessons progress, without retry or cumulative key counters in the stats strip.
 - [x] **bug: lesson 8**
   - · empty line
