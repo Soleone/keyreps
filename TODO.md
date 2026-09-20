@@ -5,7 +5,9 @@
 
 ## Next
 
-- [ ] **for duplicate lessons of the same key spice things up** — have the second or third lesson require something else. e.g. starting at a different cursor position
+- [x] **for duplicate lessons of the same key spice things up** — have the second or third lesson require something else. e.g. starting at a different cursor position
+- [ ] **publish as npm package** — prepare everything to share this as a npm package, but dont publish it yet
+- [ ] **rebrand** — align on a great name. it must still be available as global npm package
 
 ## Later
 

@@ -54,7 +54,7 @@ const optimalPaths: Record<string, Key[]> = {
   "line-start-prefix": [control("a"), text("env APP_ENV=test ")],
   "line-end-redirect": [control("e"), text(" 2>&1")],
   "char-left-missing-letter": [control("b"), text("n")],
-  "char-right-missing-letter": [control("f"), text("c")],
+  "char-right-missing-letter": [control("f"), text("a")],
   "word-left-option": [alt("b"), text("--dry-run ")],
   "word-right-option": [alt("f"), text(" --rm")],
   "kill-to-end-options": [control("k")],
@@ -139,6 +139,24 @@ test("same-tier drills for one shortcut are co-located", () => {
     const last = indexes.at(-1);
     assert.ok(first !== undefined && last !== undefined);
     assert.equal(last - first + 1, indexes.length, `${shortcut} drills should be adjacent`);
+  }
+});
+
+test("basic repeat drills vary their starting cursor positions", () => {
+  const positions = new Map<string, number[]>();
+
+  for (const challenge of challenges.filter((candidate) => candidate.tier === "basic")) {
+    const cursors = positions.get(challenge.focus) ?? [];
+    cursors.push(challenge.startCursor);
+    positions.set(challenge.focus, cursors);
+  }
+
+  for (const [shortcut, cursors] of positions) {
+    if (cursors.length < 2) {
+      continue;
+    }
+
+    assert.equal(new Set(cursors).size, cursors.length, `${shortcut} drills should start at different cursors`);
   }
 });
 
