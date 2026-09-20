@@ -1,5 +1,5 @@
 {
-  "name": "keyreps",
+  "name": "@soleone/keyreps",
   "version": "0.1.0",
   "description": "A terminal game for learning Unix and Readline keyboard shortcuts",
   "type": "module",
@@ -28,6 +28,9 @@
   ],
   "author": "Soleone <dev@soleone.xyz>",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=20"
   },

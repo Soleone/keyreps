@@ -14,14 +14,14 @@ yellow, and larger detours are red.
 Requires Node.js 20 or newer. Once published, install Key Reps globally:
 
 ```bash
-npm install --global keyreps
+npm install --global @soleone/keyreps
 keyreps
 ```
 
 You can also run it without a global install:
 
 ```bash
-npx keyreps
+npx @soleone/keyreps
 ```
 
 ## Development
