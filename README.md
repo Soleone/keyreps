@@ -44,22 +44,30 @@ keyreps
 
 ## Release
 
-Releases use [`np`](https://github.com/sindresorhus/np) from a clean `main` or
-`master` checkout. Release tooling requires Node 22+ and npm 10+; the CLI itself
-still supports Node 20+. It runs the tests, bumps the package version, creates a
-Git tag, and publishes to npm. A release hook prints npm's WebAuthn URL when a
-passkey is required.
+Releases use [`release-it`](https://github.com/release-it/release-it) from a
+clean `main` or `master` checkout. Release tooling requires Node 22+ and npm
+10+; the CLI itself still supports Node 20+. It runs the tests, bumps the
+package version, creates a Git tag, and submits the package to npm's staging
+queue.
 
 Preview a release without changing Git or publishing anything:
 
 ```bash
-npm run release -- 0.1.1 --dry-run --no-publish
+npm run release -- patch --dry-run
 ```
 
 To perform a release, choose a version increment instead:
 
 ```bash
 npm run release -- patch
+```
+
+After the release is staged, review it and approve it with your npm passkey:
+
+```bash
+npm stage list
+npm stage view <stage-id>
+npm stage approve <stage-id>
 ```
 
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
