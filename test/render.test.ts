@@ -41,12 +41,13 @@ test("condenses the lesson heading and guidance", () => {
   const output = plainRender(startGame());
 
   assert.match(output, /Typegod · Learn to control the unix keyboard\s+01 \/ 38/);
-  assert.match(output, /01 · Line start · Get to the start/);
+  assert.match(output, /01 · Get to the start/);
+  assert.doesNotMatch(output, /01 · Line start ·/);
   assert.match(output, /╭─/);
   assert.doesNotMatch(output, /INPUT|DETAILS/);
 
   const outputLines = output.split("\n");
-  const headingLine = outputLines.find((line) => line.includes("01 · Line start"));
+  const headingLine = outputLines.find((line) => line.includes("01 · Get to the start"));
   const headingIndex = output.indexOf("01 · Line start");
   const goalIndex = output.indexOf("GOAL");
   const editorIndex = output.indexOf("╭─");

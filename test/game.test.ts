@@ -64,7 +64,7 @@ const optimalPaths: Record<string, Key[]> = {
   "yank-command": [control("u"), control("y")],
   "transpose-at-end": [control("t")],
   "delete-option-character": [control("d")],
-  "combo-prefix-and-append": [control("a"), text("sudo "), control("e"), text(" --branch")],
+  "combo-prefix-and-append": [text(" --branch"), control("a"), text("sudo ")],
   "combo-remove-and-append": [alt("b"), alt("b"), alt("d"), control("e"), text(" --detach")],
   "combo-restore-and-trim": [control("u"), text("sudo "), control("y"), control("w")],
   "combo-repair-and-replace": [control("t"), control("e"), control("w"), text(" --verbose")],

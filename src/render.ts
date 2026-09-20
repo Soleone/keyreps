@@ -38,10 +38,9 @@ export function renderGame(state: GameState): string {
     return renderScreen([paint("error", "No challenge loaded.", "1")]);
   }
 
-  const drillName = formatDrillName(challenge.id);
-  const drillLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${drillName}`;
+  const lessonLabel = `${String(state.challengeIndex + 1).padStart(2, "0")} · ${challenge.title}`;
   const challengeHeading = alignColumns(
-    `${paint("accent", `${drillLabel} ·`, "1")} ${paint("text", challenge.title, "1")}`,
+    paint("text", lessonLabel, "1"),
     renderProgressLabel(state),
   );
   const challengeContent = [
@@ -114,7 +113,12 @@ function renderHeader(state: GameState, title = "Learn to control the unix keybo
   const drillLabel = state.finished
     ? "ALL DRILLS CLEARED"
     : `${String(state.challengeIndex + 1).padStart(2, "0")} / ${String(challenges.length).padStart(2, "0")}`;
-  const lines = [headerLine(alignColumns(`Typegod · ${title}`, drillLabel))];
+  const lines = [
+    headerLine(
+      `${paintHeader("accent", "Typegod ·", "1")} ${paintHeader("text", title, "1")}`,
+      paintHeader("accent", drillLabel, "1"),
+    ),
+  ];
 
   if (includeProgress) {
     lines.push(alignColumns("", `  ${renderProgressLabel(state)}`));
@@ -178,24 +182,24 @@ function backgroundLine(content: string): string {
   return paintRaw(`${theme.colors.text};${theme.panelBackground}`, `${content}${" ".repeat(padding)}`);
 }
 
-function headerLine(content: string): string {
-  const theme = themeManager.current();
+function headerLine(left: string, right: string): string {
+  const spaces = Math.max(1, PANEL_WIDTH - visibleLength(left) - visibleLength(right));
+  const content = `${left}${paintHeader("text", " ".repeat(spaces), "1")}${right}`;
   const padding = Math.max(0, PANEL_WIDTH - visibleLength(content));
-  return paintRaw(
-    `1;${theme.headerText};${theme.headerBackground}`,
-    `${content}${" ".repeat(padding)}`,
-  );
+  return `${content}${paintHeader("text", " ".repeat(padding), "1")}`;
+}
+
+function paintHeader(role: ThemeColor, value: string, attributes = ""): string {
+  const theme = themeManager.current();
+  const foreground = theme.colors[role];
+  const code = attributes.length > 0
+    ? `${attributes};${foreground};${theme.headerBackground}`
+    : `${foreground};${theme.headerBackground}`;
+  return paintRaw(code, value);
 }
 
 function border(value: string): string {
   return paint("border", value, "2");
-}
-
-function formatDrillName(id: string): string {
-  const words = id.replaceAll("-", " ").toLowerCase().split(" ");
-  const first = words[0] ?? "";
-  words[0] = first.length > 0 ? `${first[0]?.toUpperCase() ?? ""}${first.slice(1)}` : first;
-  return words.join(" ");
 }
 
 function renderEditorBlock(editor: EditorState): string[] {
