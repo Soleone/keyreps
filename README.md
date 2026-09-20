@@ -49,7 +49,7 @@ stages require several editing commands in one repair. Expert stages hide their
 instructions until a wasted key press or failed attempt reveals the safety net.
 
 - `Ctrl+A` and `Ctrl+E`: start and end of line
-- `Ctrl+B` and `Ctrl+F`: character movement
+- `Ctrl+B`, `Ctrl+F`, and the left/right arrow keys: character movement
 - `Alt+B` and `Alt+F`: word movement
 - `Ctrl+Left` and `Ctrl+Right`: word movement when supported by the terminal
 - `Ctrl+U` and `Ctrl+K`: kill to the start or end

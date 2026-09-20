@@ -33,14 +33,14 @@ test("renders each current stage instruction as a bullet", () => {
 
   assert.match(output, /• Move left once/);
   assert.match(output, /• Insert t/);
-  assert.ok(output.indexOf("Ctrl+B move left") < output.indexOf("• Move left once"));
+  assert.ok(output.indexOf("Ctrl+B / Left Arrow move left") < output.indexOf("• Move left once"));
   assert.doesNotMatch(output, /`/);
 });
 
 test("condenses the lesson heading and guidance", () => {
   const output = plainRender(startGame());
 
-  assert.match(output, /Typegod · Learn to control the unix keyboard\s+01 \/ 38/);
+  assert.match(output, /Typegod · Learn to control the unix keyboard\s+01 \/ 36/);
   assert.match(output, /01 · Get to the start/);
   assert.doesNotMatch(output, /01 · Line start ·/);
   assert.match(output, /╭─/);

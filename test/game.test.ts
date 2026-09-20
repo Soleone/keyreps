@@ -53,8 +53,6 @@ const optimalPaths: Record<string, Key[]> = {
   "delete-character": [control("d")],
   "line-start-prefix": [control("a"), text("env APP_ENV=test ")],
   "line-end-redirect": [control("e"), text(" 2>&1")],
-  "char-left-missing-letter": [control("b"), text("n")],
-  "char-right-missing-letter": [control("f"), text("a")],
   "word-left-option": [alt("b"), text("--dry-run ")],
   "word-right-option": [alt("f"), text(" --rm")],
   "kill-to-end-options": [control("k")],
@@ -100,8 +98,6 @@ test("core shortcuts are practiced in different scenarios", () => {
   const repeatedFocuses = [
     "line-start",
     "line-end",
-    "move-char-left",
-    "move-char-right",
     "move-word-left",
     "move-word-right",
     "kill-to-end",
