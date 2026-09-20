@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createTerminalIcons, iconLabel } from "../src/icons.js";
 
 test("text mode keeps the existing text-only layout", () => {
-  const icons = createTerminalIcons({ TYPEGOD_ICONS: "text" }, true);
+  const icons = createTerminalIcons({ KEYREPS_ICONS: "text" }, true);
 
   assert.equal(icons.nerdFont, false);
   assert.equal(icons.keyboard, "");
@@ -11,7 +11,7 @@ test("text mode keeps the existing text-only layout", () => {
 });
 
 test("Nerd Font mode exposes the restrained landmark set", () => {
-  const icons = createTerminalIcons({ TYPEGOD_ICONS: "nerdfont" }, false);
+  const icons = createTerminalIcons({ KEYREPS_ICONS: "nerdfont" }, false);
 
   assert.equal(icons.nerdFont, true);
   assert.notEqual(icons.keyboard, "");

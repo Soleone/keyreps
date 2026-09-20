@@ -91,7 +91,7 @@ export function loadTerminalTheme(): TerminalTheme {
 function findOmarchyColorsFile(): string | undefined {
   const stateHome = process.env.XDG_STATE_HOME || join(homedir(), ".local", "state");
   const candidates = [
-    process.env.TYPEGOD_THEME_FILE,
+    process.env.KEYREPS_THEME_FILE,
     join(stateHome, "omarchy", "current", "theme", "colors.toml"),
     join(homedir(), ".config", "omarchy", "current", "theme", "colors.toml"),
   ];

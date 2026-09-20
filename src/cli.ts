@@ -16,7 +16,7 @@ const NOTIFICATION_DURATION_MS = 3000;
 
 function main(): void {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
-    console.error("typegod needs an interactive terminal (TTY).");
+    console.error("keyreps needs an interactive terminal (TTY).");
     process.exitCode = 1;
     return;
   }

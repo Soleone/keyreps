@@ -115,7 +115,7 @@ function renderHeader(state: GameState, title = "Learn to control the unix keybo
     : `${String(state.challengeIndex + 1).padStart(2, "0")} / ${String(challenges.length).padStart(2, "0")}`;
   const lines = [
     headerLine(
-      `${paintHeader("accent", "Typegod", "1")}${paintHeader("text", ` · ${title}`, "1")}`,
+      `${paintHeader("accent", "Key Reps", "1")}${paintHeader("text", ` · ${title}`, "1")}`,
       paintHeader("accent", drillLabel, "1"),
     ),
   ];

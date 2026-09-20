@@ -51,14 +51,14 @@ type IconPreference = "auto" | "nerd" | "text";
  *
  * Font availability cannot be queried through a terminal protocol. In auto
  * mode, we use fontconfig when the app is attached to a TTY and otherwise keep
- * rendering deterministic text-only output. TYPEGOD_ICONS can force either
+ * rendering deterministic text-only output. KEYREPS_ICONS can force either
  * mode for terminals where fontconfig does not reflect the active font.
  */
 export function createTerminalIcons(
   env: NodeJS.ProcessEnv = process.env,
   isTTY = process.stdout.isTTY === true,
 ): TerminalIcons {
-  const preference = parsePreference(env.TYPEGOD_ICONS);
+  const preference = parsePreference(env.KEYREPS_ICONS);
   if (preference === "text") {
     return textIcons;
   }

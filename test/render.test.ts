@@ -40,7 +40,7 @@ test("renders each current stage instruction as a bullet", () => {
 test("condenses the lesson heading and guidance", () => {
   const output = plainRender(startGame());
 
-  assert.match(output, /Typegod · Learn to control the unix keyboard\s+01 \/ 36/);
+  assert.match(output, /Key Reps · Learn to control the unix keyboard\s+01 \/ 36/);
   assert.match(output, /01 · Get to the start/);
   assert.doesNotMatch(output, /01 · Line start ·/);
   assert.match(output, /╭─/);

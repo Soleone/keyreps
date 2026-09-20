@@ -1,10 +1,10 @@
 {
-  "name": "typegod",
+  "name": "keyreps",
   "version": "0.1.0",
   "description": "A terminal game for learning Unix and Readline keyboard shortcuts",
   "type": "module",
   "bin": {
-    "typegod": "dist/src/cli.js"
+    "keyreps": "dist/src/cli.js"
   },
   "scripts": {
     "build": "tsc && chmod +x dist/src/cli.js",
