@@ -1,0 +1,33 @@
+{
+  "project": "../..",
+  "mount": {
+    ".": {
+      "from": "./home"
+    },
+    ".keyreps": {
+      "from": "../..",
+      "include": [
+        "package.json"
+      ]
+    },
+    ".keyreps/dist": {
+      "from": "../../dist",
+      "include": [
+        "src"
+      ]
+    }
+  },
+  "env": {
+    "PATH": "~/bin:/usr/local/bin:/usr/bin:/bin",
+    "KEYREPS_ICONS": "text"
+  },
+  "setup": [
+    "chmod +x bin/keyreps"
+  ],
+  "start": "keyreps",
+  "welcome": [
+    "\u001b[1mKey Reps\u001b[0m drills the shortcuts that make a shell prompt fast: Ctrl+A, Alt+B, Ctrl+K and friends.",
+    "This is the real game, on a simulated command line, so nothing you type runs.",
+    "It opens by itself. Press Ctrl+C to quit and type keyreps to start again."
+  ]
+}

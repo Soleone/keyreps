@@ -2,7 +2,9 @@
 
 A tiny terminal game for learning Unix and Readline keyboard shortcuts.
 
-<img width="1324" height="708" alt="image" src="https://github.com/user-attachments/assets/be68bdae-51b0-480d-9062-2201e5819842" />
+**[Try it in your browser](https://keyreps.soleone.xyz)**: the real game in a sandboxed terminal, no install.
+
+![Three drills solved with Ctrl+A and Ctrl+E: two perfect in green, one with a detour that scores yellow](demo/media/demo.webp)
 
 It runs a simulated command line, so practice never executes a real shell command.
 Each drill gives you a target line and tracks the keyboard presses needed to solve
@@ -33,6 +35,8 @@ npm install
 npm test
 npm run build
 node dist/src/cli.js
+npm run demo            # the browser demo at http://localhost:4321
+npm run media:capture   # re-record demo/media (needs agent-browser and FFmpeg)
 ```
 
 For local development, `npm link` makes the command available as `keyreps`.

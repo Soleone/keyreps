@@ -16,7 +16,10 @@
     "release": "release-it",
     "start": "node dist/src/cli.js",
     "test": "npm run build && node --test dist/test/*.test.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "demo:build": "npm run build && showcase terminal demo/browser --out dist/browser",
+    "demo": "npm run build && showcase terminal demo/browser --out dist/browser --serve",
+    "media:capture": "node demo/capture.mjs"
   },
   "keywords": [
     "cli",
@@ -47,6 +50,7 @@
     }
   },
   "devDependencies": {
+    "@soleone/showcase": "github:Soleone/showcase#658b1b5",
     "@types/node": "^22.0.0",
     "release-it": "^21.1.0",
     "typescript": "^5.6.0"

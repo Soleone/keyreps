@@ -1,0 +1,3 @@
+#!/usr/bin/env node
+// keyreps, built by `npm run build` and mounted at ~/.keyreps/dist. A CommonJS shim, since the sandbox runs extensionless ES modules silently.
+import("../.keyreps/dist/src/cli.js");
