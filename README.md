@@ -26,53 +26,7 @@ You can also run it without a global install:
 npx @soleone/keyreps
 ```
 
-## Development
-
-From a checkout, install dependencies, run the tests, and start the compiled CLI:
-
-```bash
-npm install
-npm test
-npm run build
-node dist/src/cli.js
-npm run demo            # the browser demo at http://localhost:4321
-npm run media:capture   # re-record demo/media (needs agent-browser and FFmpeg)
-```
-
-For local development, `npm link` makes the command available as `keyreps`.
-
-```bash
-npm link
-keyreps
-```
-
-## Release
-
-Releases use [`release-it`](https://github.com/release-it/release-it) from a
-clean `main` or `master` checkout. Release tooling requires Node 22+ and npm
-10+; the CLI itself still supports Node 20+. It runs the tests, bumps the
-package version, creates a Git tag, and submits the package to npm's staging
-queue.
-
-Preview a release without changing Git or publishing anything:
-
-```bash
-npm run release -- patch --dry-run
-```
-
-To perform a release, choose a version increment instead:
-
-```bash
-npm run release -- patch
-```
-
-After the release is staged, review it and approve it with your npm passkey:
-
-```bash
-npm stage list
-npm stage view <stage-id>
-npm stage approve <stage-id>
-```
+## Play
 
 The program needs an interactive POSIX terminal. Press `Ctrl+C` to quit, `Esc` to
 reset a drill, `Enter` to submit it, `Ctrl+Up` for the next lesson, and
@@ -109,3 +63,51 @@ instructions until a wasted key press or failed attempt reveals the safety net.
 
 The editor, terminal decoder, and game state are separate so the behavior can be
 tested without needing a terminal.
+
+## Development
+
+From a checkout, install dependencies, run the tests, and start the compiled CLI:
+
+```bash
+npm install
+npm test
+npm run build
+node dist/src/cli.js
+npm run demo            # the browser demo at http://localhost:4321
+npm run media:capture   # re-record demo/media (needs agent-browser and FFmpeg)
+```
+
+For local development, `npm link` makes the command available as `keyreps`.
+
+```bash
+npm link
+keyreps
+```
+
+## Releasing
+
+Releases use [`release-it`](https://github.com/release-it/release-it) from a
+clean `main` or `master` checkout. Release tooling requires Node 22+ and npm
+10+; the CLI itself still supports Node 20+. It runs the tests, bumps the
+package version, creates a Git tag, and submits the package to npm's staging
+queue.
+
+Preview a release without changing Git or publishing anything:
+
+```bash
+npm run release -- patch --dry-run
+```
+
+To perform a release, choose a version increment instead:
+
+```bash
+npm run release -- patch
+```
+
+After the release is staged, review it and approve it with your npm passkey:
+
+```bash
+npm stage list
+npm stage view <stage-id>
+npm stage approve <stage-id>
+```
